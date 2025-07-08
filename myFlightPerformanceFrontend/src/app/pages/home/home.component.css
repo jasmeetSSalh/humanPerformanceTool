@@ -1,0 +1,17 @@
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    margin: 3%;
+
+}
+
+.component {
+    width: calc(33.33% - 20px); /* 3 per row with gap adjustment */
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}

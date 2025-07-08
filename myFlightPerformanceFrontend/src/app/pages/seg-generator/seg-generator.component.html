@@ -1,0 +1,174 @@
+<p-dialog 
+  header="Edit Profile" 
+  [modal]="true" 
+  [(visible)]="isVisibleProcedure" 
+  [style]="{ width: '25rem' }">
+  <span class="p-text-secondary block mb-8">Add Procedure</span>
+  <div class="flex items-center gap-4 mb-8">
+    <label for="newEventTriggerDescription" class="font-semibold w-24">Procedure Number</label>
+    <input type="text" pInputText [(ngModel)]="newEventTriggerDescription" />
+
+  </div>
+  <div class="flex justify-end gap-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="isVisibleProcedure = false" />
+    <p-button label="Save" (onClick)="addNewEventTrigger('Procedure'); isVisibleProcedure = false" />
+  </div>
+</p-dialog>
+
+<p-dialog 
+  header="Edit Profile" 
+  [modal]="true" 
+  [(visible)]="isVisibleOther" 
+  [style]="{ width: '25rem' }">
+  <span class="p-text-secondary block mb-8">Add Other</span>
+  <div class="flex items-center gap-4 mb-8">
+    <label for="newEventTriggerDescription" class="font-semibold w-24">Other Description</label>
+    <input type="text" pInputText [(ngModel)]="newEventTriggerDescription" />
+
+  </div>
+  <div class="flex justify-end gap-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="isVisibleOther = false" />
+    <p-button label="Save" (onClick)="addNewEventTrigger('Other'); isVisibleOther = false" />
+  </div>
+</p-dialog>
+
+
+<div class="container"> 
+  <form [formGroup]="segForm" (ngSubmit)="onSubmit()">
+    <p-divider></p-divider>
+    <label class="font-big">SEG Information:</label>
+    <p-divider></p-divider>
+
+    <div formGroupName="segDocument" class="grid p-fluid">
+
+        <div class="col-12">
+            <label class="font-medium"><span class="text-red-500">* </span>Title: </label>
+            <input type="text" class="col-12" pInputText formControlName="SegName" />
+        </div>
+
+        <div class="col-6">
+          <label class="font-medium"><span class="text-red-500">* </span>Training Program:</label>
+          <input type="text" class="col-12" pInputText formControlName="TrainingProgram" value="Human Performance Training Program" />
+        </div>
+
+        <div class="col-6">
+            <label class="font-medium"><span class="text-red-500">* </span>Document Number:</label>
+            <input type="datetime" class="col-12" pInputText formControlName="DocName" />
+        </div>
+        
+        <div class="col-6">
+            <label class="font-medium"><span class="text-red-500">* </span>Creation Date:</label>
+            <input type="date" class="col-12" pInputText formControlName="CreationDate" />
+        </div>
+
+        <div class="col-6">
+            <label class="font-medium"><span class="text-red-500">* </span>Created By:</label>
+            <input type="text" class="col-12" pInputText formControlName="CreatedBy" />
+        </div>
+    </div>
+
+
+    <!-- Event Trigger Section -->
+    <div formArrayName="segDocumentJunction" cdkDropList (cdkDropListDropped)="dropJunction($event)">
+      <div *ngFor="let junction of segDocumentJunction.controls; let i = index" [formGroupName]="i" class="junction-item" cdkDrag>
+
+        <p-divider></p-divider> 
+
+        <div class="section-header">
+          
+          <h3>Event Trigger {{i + 1}}</h3>
+          <div class="order-controls">
+            <p-button icon="pi pi-arrow-up" (click)="moveUp(i)" 
+                     [disabled]="i === 0" styleClass="p-button-text"></p-button>
+            <p-button icon="pi pi-arrow-down" (click)="moveDown(i)" 
+                     [disabled]="i === segDocumentJunction.length - 1" styleClass="p-button-text"></p-button>
+            <p-button icon="pi pi-trash" (click)="removeJunction(i)" styleClass="p-button-danger p-button-text"></p-button>
+        </div>
+
+      </div>
+        
+        
+        <div class="grid p-fluid">
+          <div class="col-12">
+          <label>Select Master Category</label>
+          <p-select
+            formControlName="CurrentMasterSelections"
+            [options]="masterSelectionType"
+            optionLabel="label"
+            placeholder="Select Category"
+            class="w-full"
+            (onChange)="onMasterSelectionChange($event, i)">
+          </p-select>
+        </div>
+
+        <div class="col-12" *ngIf="junction.get('CurrentMasterSelections')?.value">
+          <label>
+            Select {{ junction.get('CurrentMasterSelections')?.value?.label }}
+          </label>
+
+          <p-dropdown
+            formControlName="CurrentEventTrigger"
+            [options]="getCategoryArrayForJunction(i)"
+            optionLabel="trigDes"
+            placeholder="Select Event Trigger"
+            class="w-full">
+          </p-dropdown>
+
+          <p-button 
+            *ngIf="junction.get('CurrentMasterSelections')?.value?.label === 'Procedure'"
+            label="Add New Procedure"
+            icon="pi pi-plus"
+            class="p-button-text"
+            (onClick)="isVisibleProcedure = true">
+          </p-button>
+
+          <p-button 
+            *ngIf="junction.get('CurrentMasterSelections')?.value?.label === 'Other'"
+            label="Add New Other"
+            icon="pi pi-plus"
+            class="p-button-text"
+            (onClick)="isVisibleOther = true">
+          </p-button>
+        </div>
+
+          <div class="col-12" *ngIf="junction.get('CurrentEventTrigger')?.value">
+            <label>Select Behaviour</label>
+            <p-multiSelect 
+              formControlName="CurrentBehaviours"
+              [options]="$existingObservation"
+              optionLabel="behaviour"
+              placeholder="Select Observations"
+              class="w-full">
+            </p-multiSelect>
+
+          </div>
+        </div>
+        
+        <p-divider></p-divider>
+      </div>
+    </div>
+
+    <div class="submitBtn">
+      <p-button 
+        class="col-3 m-2" 
+        label="Add Event Trigger" 
+        icon="pi pi-plus" 
+        (click)="addNewJunction()" 
+        type="button">
+      </p-button>
+      <p-button 
+        class="col-3 m-2" 
+        [label]="editMode ? 'Update' : 'Submit'" 
+        type="submit" 
+        styleClass="p-button-success"
+        [disabled]="isButtonDisabled"
+        (click)="handleButtonClick()">
+      </p-button>
+
+
+
+    
+
+    </div>
+  </form>
+</div>

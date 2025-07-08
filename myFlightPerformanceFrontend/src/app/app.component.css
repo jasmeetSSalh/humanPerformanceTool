@@ -1,0 +1,25 @@
+@import "primeicons/primeicons.css";
+
+
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    height: 100vh;
+    overflow: hidden; /* Prevent scrolling on the entire container */
+  }
+  
+  app-tooltip {
+    position: sticky;
+    top: 0;
+    height: fit-content;
+    z-index: 10; /* Ensures it stays on top if needed */
+  }
+  
+  .router-wrapper {
+    flex-grow: 1;
+    overflow-y: auto; /* Allows scrolling only inside this div */
+    height: 100vh;
+  }
+  

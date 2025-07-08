@@ -1,0 +1,73 @@
+<div class="container">
+  <!-- Sidebar / Navigation -->
+  <nav class="navbar" [class.collapsed]="isCollapsed">
+    <!-- Profile Section -->
+    <section class="profile">
+      <img class="avatar" src="../../../assets/performance.png" alt="avatar" />
+      <span class="nav-text name">
+        <p>Human Performance</p>
+        <p>Training Tool</p>
+      </span>
+    </section>
+
+    <!-- Navigation Items -->
+    <section class="main">
+      <ng-container *ngFor="let section of items">
+        <div class="nav-item">
+          <span class="nav-text">{{ section.label }}</span>
+          <ng-container *ngFor="let item of section.items">
+            <p-button
+              class="material-symbols-rounded"
+              [icon]="item.icon"
+              [label]="isCollapsed ? '' : item.label"
+              text
+              plain
+              [routerLink]="item.route">
+            </p-button>
+          </ng-container>
+        </div>
+        <hr />
+      </ng-container>
+
+      <!-- OBS FUNCTION REMOVE WHEN REUSING COMPONENT -->
+      <div class="nav-item">
+        <span class="nav-text">OBS Functions</span>
+        <p-button
+          class="material-symbols-rounded"
+          icon="pi pi-play"
+          text
+          plain
+          [label]="isCollapsed ? '' : 'Start Recording'"
+          (click)="startR()">
+        </p-button>
+      
+      
+        <p-button
+          class="material-symbols-rounded"
+          icon="pi pi-stop"
+          text
+          plain
+          [label]="isCollapsed ? '' : 'Stop Recording'"
+          (onClick)="stopR()">
+        </p-button>
+        <p-button
+          class="material-symbols-rounded"
+          icon="pi pi-images"
+          text
+          plain
+          [label]="isCollapsed ? '' : 'Frame Last 10 Seconds'"
+          (onClick)="frameR()">
+        </p-button>
+      </div>
+    </section>
+
+    <!-- Toggle Button -->
+    <button class="toggle" (click)="toggleNavbar()">
+      <p-button
+        severity="contrast"
+        class="bg-blue-800"
+        [icon]="isCollapsed ? 'pi pi-chevron-right' : 'pi pi-chevron-left'">
+      </p-button>
+    </button>
+  </nav>
+</div>

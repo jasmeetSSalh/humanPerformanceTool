@@ -1,0 +1,290 @@
+<div class="container">
+    <form [formGroup]="inputForm" (ngSubmit)="onSubmit()">
+        <h1 class="title"> {{ currentSeg.segName || 'Segment Details' }}</h1>
+
+        <!-- <p-select formControlName="grade" [options]="grades" placeholder="Select a Grade"/> -->
+        <p-stepper [value]="1">
+            <!-- Check List -->
+            <p-step-item [value]="1" (click)="onStepClick($event)">
+                <p-step>Pre-event Checklist</p-step>
+                <p-step-panel>
+                    <ng-template #content let-activateCallback="activateCallback">
+                        <div class="flex flex-col h-48">
+                            <div class="dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
+                                <p-table [value]="checkListPreEventData" [tableStyle]="{ 'min-width': '50rem' }">
+                                    <ng-template pTemplate="header">
+                                      <tr>
+                                        <th>To Check:</th>
+                                        <th>Status</th>
+                                      </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-item let-i="index">
+                                      <tr>
+                                        <td>{{ item.label }}</td>
+                                        <td>
+
+                                          <p-checkbox formControlName="{{item.var}}" binary="{{item.var}}"/>
+                                        </td>
+                                      </tr>
+                                    </ng-template>
+                                  </p-table>
+                                  
+                            </div>
+                        </div>
+                        <div class="flex py-6 gap-3">
+                            <p-button type="button" label="Check All" severity="info" (onClick)="checkAllBoxes()"></p-button>
+                            <p-button type="button" label="Next" (onClick)="activateCallback(2)"></p-button>
+                        </div>
+                    </ng-template>
+                </p-step-panel>
+            </p-step-item>
+
+            <!-- Participant Information -->
+            <p-step-item [value]="2" (click)="onStepClick($event)">
+                <p-step>Participant Information</p-step>
+                <p-step-panel>
+                    <ng-template #content let-activateCallback="activateCallback">
+                            <div class="dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium mt-2">
+                                <p-splitter [style]="{ height: '10svh', width:'65svw' }" styleClass="mb-2">
+                                    <ng-template pTemplate="panel">
+                                        <div class="items-center justify-center gap-2">
+                                            <label class="flex-row font-semibold text-white">Participant 1 (L) - Employee Number</label>
+                                            <br>
+                                            <p-inputnumber 
+                                                formControlName="pilotL" 
+                                                mode="decimal" 
+                                                inputId="pilotL" 
+                                                [useGrouping]="false"
+                                                class="flex-row w-20 text-center bg-gray-800 p-2 rounded-md border border-gray-600" 
+                                            />
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="panel">
+                                        <div class="items-center justify-center gap-2">
+                                            <label class="flex-row font-semibold text-white">Participant 2 (R) - Employee Number</label>
+                                            <br>
+                                            <p-inputnumber 
+                                                formControlName="pilotR" 
+                                                mode="decimal" 
+                                                inputId="pilotR" 
+                                                [useGrouping]="false"
+                                                class="flex-row w-20 text-center bg-gray-800 p-2 rounded-md border border-gray-600" 
+                                            />
+                                        </div>
+                                    </ng-template>
+                                </p-splitter> 
+                            </div>
+                            <div class="flex py-6 gap-2">
+                                <p-button type="button" label="Back" severity="secondary" (onClick)="activateCallback(1)" />
+                                <p-button type="button" label="Next" (onClick)="activateCallback(3)" />
+                            </div>
+                    </ng-template>
+                </p-step-panel>
+            </p-step-item>
+
+            <!-- SEG Content -->
+            <p-step-item 
+                (click)="onStepClick($event)"     
+                *ngFor="let event of currentSegJunctions; let eventIndex = index"
+                [value]="2 + eventIndex + 1" >
+                        <p-step>{{event.eventTrigger?.trigDes}}</p-step>
+                <p-step-panel>
+                    <ng-template #content let-activateCallback="activateCallback">
+                        <div class="h-full w-full">
+                            <div class="dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium mt-2">
+                                <div class="containerEventTriggers">
+                                    <div class="eventTriggerInfo">
+                                        <p>Event Trigger</p>
+                                        <p>Category: {{ event.eventTrigger?.trigCat }}</p>
+                                        <p>Description: {{ event.eventTrigger?.trigDes }}</p>
+                                        <p *ngIf="event.eventTrigger?.trigType === 0">Type: Malfunction</p>
+                                        <p *ngIf="event.eventTrigger?.trigType === 1">Type: Procedure</p>
+                                        <p *ngIf="event.eventTrigger?.trigType === 2">Type: Other</p>
+
+                                    </div>
+            
+                                    <!-- Main content layout -->
+                                    <div class="main-content">
+                                        <!-- Observations -->
+                                        <div class="observation">
+                                            <p><strong>Observing:</strong></p>
+                                            <table class="w-full border-collapse border border-gray-500">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="border border-gray-400 px-4 py-2">SubCategory</th>
+                                                        <th class="border border-gray-400 px-4 py-2">Behaviour</th>
+                                                        <th class="border border-gray-400 px-4 py-2">Pilot 1 (P1)</th>
+                                                        <th class="border border-gray-400 px-4 py-2">Pilot 2 (P2)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let observationCtrl of getObservations(eventIndex); let observationIndex = index" [formGroup]="observationCtrl">
+                                                        <td class="border border-gray-400 px-4 py-2">
+                                                        {{ observationCtrl.get('subCategory')?.value }}
+                                                        </td>
+                                                        <td class="border border-gray-400 px-4 py-2">
+                                                        {{ observationCtrl.get('behaviour')?.value }}
+                                                        </td>
+                                                        <td class="border border-gray-400 px-4 py-2">
+                                                        <div formGroupName="lGrade">
+                                                            <!-- <p-select formControlName="grade" [options]="grades" optionLabel="label" placeholder="Select a Grade"></p-select> -->
+                                                            <p-select formControlName="grade" [options]="grades" placeholder="Select a Grade"></p-select>
+                                                        </div>
+                                                        </td>
+                                                        <td class="border border-gray-400 px-4 py-2">
+                                                        <div formGroupName="rGrade">
+                                                            <p-select formControlName="grade" [options]="grades" placeholder="Select a Grade"></p-select>
+                                                        </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex py-6 gap-2">
+                                <p-button type="button" label="Back" severity="secondary" (onClick)="activateCallback(3 + eventIndex - 1)" />
+                                <p-button type="button" label="Next" (onClick)="activateCallback(3 + eventIndex + 1)" />
+                            </div>
+                        </div>
+                       
+                    </ng-template>
+                </p-step-panel>
+            </p-step-item>
+
+            <!-- Individual Critique -->
+            <p-step-item [value]="2 + currentSegJunctions.length + 1" (click)="onStepClick($event)">
+                <p-step>Instructor Critique (Flying Students)</p-step>
+                <p-step-panel>
+                    <ng-template #content let-activateCallback="activateCallback">
+                        <div class="flex-auto flex justify-center items-center">
+                            <div class="rounded bg-surface-700 justify-center items-center font-medium">
+                                <p-table [tableStyle]="{'min-width': '55rem'}" showGridlines>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th class="w-3 bg-gray-600">Category</th>
+                                            <th class="bg-yellow-600">L</th>
+                                            <th class="bg-indigo-300">R</th>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th>Current Focus Area</th>
+                                            <td colspan="2">
+                                                <p-select class="w-full" formControlName="currentFocusArea" [options]="focusAreas" placeholder="Select a Focus Area"></p-select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th class="w-3 bg-gray-600">Marking Scheme</th>
+                                            <td colspan="2">
+                                                <img src="../../../assets/individual_critique_marking_reference_sheet.jpg" alt="">
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Focus Area Score</th>
+                                            <th>{{ GetFocusAreaScore("l") }}</th>
+                                            <th>{{ GetFocusAreaScore("r") }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Procedural Use & Adherence</th>
+                                            <th>
+                                                <p-inputnumber  formControlName="leftProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" ></p-inputnumber>
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftProceduralScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()"></p-inputnumber>
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightProceduralScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Situational Awareness</th>
+                                            <th>
+                                                <p-inputnumber  formControlName="leftSituationalScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()"></p-inputnumber>
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftSituationalScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightSituationalScore"  [min]="0" [max]="10" class="w-full mb-4" ></p-inputnumber>
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightSituationalScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Verification Practices</th>
+                                            <th>
+                                                <input [min]="0" [max]="10" [step]="1"  type="number" pInputText formControlName="leftVerificationScore" class="w-full mb-4" (onChange)="calculateOverallScore()"/>
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftVerificationScore" class="w-full" (onChange)="calculateOverallScore()"/>
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightVerificationScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightVerificationScore" class="w-full" (onChange)="calculateOverallScore()"/>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Overall Score</th>
+                                            <th><p-inputnumber [disabled]="true" formControlName="leftOverallScore"></p-inputnumber></th>
+                                            <th><p-inputnumber [disabled]="true" formControlName="rightOverallScore"></p-inputnumber></th>
+                                        </tr>
+
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </div>
+                        <div class="flex py-6 gap-2">
+                            <p-button type="button" label="Back" severity="secondary" (onClick)="activateCallback(2 + currentSegJunctions.length)" />
+                            <p-button type="button" label="Next" (onClick)="activateCallback(2 + currentSegJunctions.length + 2)" />
+                        </div>
+                    </ng-template>
+                </p-step-panel>
+            </p-step-item>
+
+            <!-- Summission Page -->
+            <p-step-item [value]="2 + currentSegJunctions.length + 2" (click)="onStepClick($event)">
+                <p-step>Submission</p-step>
+                <p-step-panel>
+                    <ng-template #content let-activateCallback="activateCallback">
+                        <h2 class="text-xl font-semibold">Review Your Submission</h2>
+
+                        <div class="flex flex-col min-h-48 gap-2">
+                            <div 
+                                class="border-2 border-surface-200 dark:border-surface-700 
+                                       rounded bg-surface-50 dark:bg-surface-950 
+                                       flex-auto flex flex-col justify-start items-start 
+                                       font-medium p-6 space-y-4 text-left"
+                            >
+                                <!-- Segment Information -->
+                                <div class="space-y-1 w-full">
+                                    <p><strong>Segment Name:</strong> {{ currentSeg.segName || 'N/A' }}</p>
+                                    <p><strong>Current Focus Area:</strong> {{ inputForm.value.currentFocusArea?.label ?? 'N/A' }}</p>
+                                </div>
+                        
+                                <!-- Participant Information -->
+                                <div class="space-y-2 w-full gap-2">
+                                    <h3 class="text-lg font-semibold border-b pb-1">Participant Information</h3>
+                                    
+                                    <p><strong>Participant 1 (L):</strong> {{ inputForm.get('pilotL')?.value || 'N/A' }}</p>
+                                
+                                    <p><strong>Participant 2 (R):</strong> {{ inputForm.get('pilotR')?.value || 'N/A' }}</p>
+                                    <p><strong>Overall Scores:</strong> P1: {{ inputForm.get('leftOverallScore')?.value || 'N/A' }}, 
+                                        P2: {{ inputForm.get('rightOverallScore')?.value || 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Navigation Buttons -->
+                        <div class="py-6 flex gap-4">
+                            <p-button 
+                                type="button" 
+                                label="Back" 
+                                severity="secondary" 
+                                (onClick)="activateCallback(2 + currentSegJunctions.length + 1)" 
+                            />
+                            <p-button label="Submit" type="submit" (onClick)="onSubmit()"/>
+                        </div>
+                    </ng-template>
+                </p-step-panel>
+            </p-step-item>
+            
+
+        </p-stepper>
+    </form>
+</div>

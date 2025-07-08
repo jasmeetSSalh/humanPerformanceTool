@@ -1,0 +1,22 @@
+<div class="container">
+
+    <div *ngFor="let seg of segDocumentList; let i = index">
+        <p-card [style]="{ width: '15rem', overflow: 'hidden' }">
+            <ng-template #header>
+                <img 
+                alt="Card" 
+                class="w-full h-[200px] object-cover" 
+                src="/assets/airplane_image_unsplash.jpg" 
+              />
+                          </ng-template>
+            <ng-template #title> {{seg.segName}} </ng-template>
+            <ng-template #subtitle> {{seg.docName}}</ng-template>
+            <ng-template #body> Created By: {{seg.createdBy}}</ng-template>
+            <ng-template #footer>
+                <div class="flex gap-4 mt-1">
+                    <p-button label="Start" class="w-full" styleClass="w-full" (onClick)="startSeg(seg.segId)" />
+                </div>
+            </ng-template>
+        </p-card>
+    </div>
+</div>

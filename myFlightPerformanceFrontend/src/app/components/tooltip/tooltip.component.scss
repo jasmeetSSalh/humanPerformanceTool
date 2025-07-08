@@ -1,0 +1,211 @@
+@import url("https://api.fontshare.com/v2/css?f[]=nunito@200,201,300,301,400,401,500,501,600,601,700,701,800,801,900,901,1,2&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100,0,0");
+@import url("https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&family=Material+Symbols+Rounded&family=Material+Symbols+Sharp&display=swap");
+
+// Mixin for flex properties
+@mixin flex-basic-props($direction: row, $justify: normal, $items: normal) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $items;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Nunito", sans-serif;
+  transition: 0.5s all ease-in-out;
+}
+
+.container {
+  @include flex-basic-props();
+
+}
+
+button,
+span {
+  cursor: pointer;
+}
+
+button {
+  background-color: #fff;
+  border-radius: 8px;
+  top: 6%;
+  right: -12px;
+  position: absolute;
+  @include flex-basic-props();
+  border: 1px solid #e7e7e7;
+}
+
+.main,
+.settings,
+.others,
+.profile {
+  @include flex-basic-props(column);
+  gap: 12px;
+}
+
+.profile {
+  flex-direction: row;
+}
+
+hr {
+  border: 1px solid #e7e7e7;
+  border-radius: 99px;
+}
+
+.container {
+  flex: 1;
+}
+
+main {
+  @include flex-basic-props(column, center, center);
+  flex-grow: 1;
+  word-break: break-all;
+}
+
+.main > div,
+.settings > div,
+.others > div {
+  @include flex-basic-props(column, left, left);
+  gap: 12px;
+}
+
+section > p,
+.position {
+  font-size: 20px;
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+}
+
+.navbar {
+  width: min-content;
+  height: 100vh;
+  background-color: #262A4A;
+  flex-shrink: 0;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  gap: 24px;
+  padding: 24px;
+  position: relative;
+  @include flex-basic-props(column);
+}
+
+.navbar.collapsed {
+  width: 100px;
+}
+
+
+.navbar.collapsed .nav-text {
+  display: none;
+}
+
+.nav-item {
+  @include flex-basic-props(row, left, left);
+  padding: 10px;
+}
+
+.nav-item .material-symbols-rounded,
+.nav-item .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.nav-item .nav-text {
+  font-size: 20px;
+}
+
+.navbar.collapsed .nav-item .nav-text {
+  display: none;
+}
+
+.name {
+  @include flex-basic-props(column, space-between, normal);
+  color: rgb(255, 255, 255);
+}
+
+.drop-down {
+  @include flex-basic-props(row, space-between, center);
+}
+
+.drop-down div {
+  @include flex-basic-props(row, normal, center);
+  gap: 12px;
+}
+
+.settings,
+.others {
+  @include flex-basic-props(column, normal, normal);
+  gap: 12px;
+}
+
+.main {
+  flex-grow: 1;
+}
+
+.logout {
+  color: #ed5656;
+}
+
+.toggle {
+  top: 4%;
+  right: -12px;
+  position: absolute;
+}
+
+.current {
+  background-color: #d9d9d950;
+  border-radius: 16px;
+}
+
+@media screen and (max-width: 650px) {
+  .navbar {
+    width: 50px;
+  }
+
+  .navbar .nav-text {
+    display: none;
+  }
+
+  .navbar .nav-item {
+    padding: 10px;
+  }
+
+  .navbar .nav-item .material-symbols-rounded,
+  .navbar .nav-item .material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  .toggle {
+    display: none;
+  }
+}
+
+.navbar.collapsed .nav-item .nav-text {
+  display: none;
+}
+
+.navbar.collapsed .nav-item {
+  padding: 5px 10px;
+}
+
+.navbar .nav-item .nav-text {
+  
+}
+
+.navbar .nav-item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-item {
+  display: flex;
+  align-items: left;
+  flex-direction: column;  /* Stack buttons vertically */
+  gap: 10px;  /* Optional: add spacing between buttons */
+}
+

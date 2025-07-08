@@ -1,0 +1,51 @@
+#################################
+# .NET / ASP.NET Core Backend
+#################################
+TrainingBackend/bin/
+TrainingBackend/obj/
+TrainingBackend/publish/
+TrainingBackend/wwwroot/
+TrainingBackend\.vs
+TrainingBackend/.vs
+TrainingBackend/*.user
+TrainingBackend/*.suo
+TrainingBackend/*.userosscache
+TrainingBackend/UpgradeLog.htm
+TrainingBackend/Backup/
+TrainingBackend/efpt.config.json.user
+
+# Optional: ignore all .log files
+*.log
+
+#################################
+# Angular Frontend
+#################################
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.angular/
+Frontend/.vscode/
+Frontend/npm-debug.log
+Frontend/yarn-error.log
+Frontend/docs/.vitepress/cache
+
+#################################
+# Global IDE/editor junk
+#################################
+*.sln.docstates
+.vscode/
+.idea/
+*.tlog
+*.tmp
+
+#################################
+# OS generated files
+#################################
+.DS_Store
+Thumbs.db
+
+#################################
+# Optional: History/Temp folders
+#################################
+.history/
+tmp/
+temp/
