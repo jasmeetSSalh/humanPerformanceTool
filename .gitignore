@@ -1,32 +1,39 @@
 #################################
 # .NET / ASP.NET Core Backend
 #################################
-TrainingBackend/bin/
-TrainingBackend/obj/
-TrainingBackend/publish/
-TrainingBackend/wwwroot/
-TrainingBackend\.vs
-TrainingBackend/.vs
-TrainingBackend/*.user
-TrainingBackend/*.suo
-TrainingBackend/*.userosscache
-TrainingBackend/UpgradeLog.htm
-TrainingBackend/Backup/
-TrainingBackend/efpt.config.json.user
+myFlightPerformanceBackend/bin/Debug/
+myFlightPerformanceBackend/bin/Release/
+myFlightPerformanceBackend/obj/Debug/
+myFlightPerformanceBackend/obj/Release/
+
+myFlightPerformanceBackend/.vs/
+myFlightPerformanceBackend/.vscode/
+myFlightPerformanceBackend/.vscode-test/
+
+myFlightPerformanceBackend/publish/
+myFlightPerformanceBackend/wwwroot/
+myFlightPerformanceBackend/.vs
+myFlightPerformanceBackend/.vs
+myFlightPerformanceBackend/*.user
+myFlightPerformanceBackend/*.suo
+myFlightPerformanceBackend/*.userosscache
+myFlightPerformanceBackend/UpgradeLog.htm
+myFlightPerformanceBackend/Backup/
+myFlightPerformanceBackend/efpt.config.json.user
 
 # Optional: ignore all .log files
 *.log
 
 #################################
-# Angular Frontend
+# Angular myFlightPerformanceFrontend
 #################################
-Frontend/node_modules/
-Frontend/dist/
-Frontend/.angular/
-Frontend/.vscode/
-Frontend/npm-debug.log
-Frontend/yarn-error.log
-Frontend/docs/.vitepress/cache
+myFlightPerformanceFrontend/node_modules/
+myFlightPerformanceFrontend/dist/
+myFlightPerformanceFrontend/.angular/
+myFlightPerformanceFrontend/.vscode/
+myFlightPerformanceFrontend/npm-debug.log
+myFlightPerformanceFrontend/yarn-error.log
+myFlightPerformanceFrontend/docs/.vitepress/cache
 
 #################################
 # Global IDE/editor junk

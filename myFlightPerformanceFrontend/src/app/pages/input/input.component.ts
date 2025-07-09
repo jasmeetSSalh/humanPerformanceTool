@@ -169,27 +169,35 @@ export class InputComponent implements OnInit {
       },
     });
 
-    this.inputService.getSpecificSegDocumentJunction(segId).subscribe({
-      next: (data) => {
-        console.log("Fetched Events Data:", data); // Debugging log
-        if (data) {
-          this.events.clear(); // Ensure we start fresh
-          data.forEach((event) => {
-            this.events.push(this.createEventFormGroup(event));
-          });
+   this.inputService.getSpecificSegDocumentJunction(segId).subscribe({
+    next: (data) => {
+      console.log("Fetched Events Data:", data); // Debugging log
+      if (data) {
+        this.events.clear(); // Ensure we start fresh
 
-          // Ensure currentSegJunctions is updated
-          this.currentSegJunctions = data;
-          console.log("Updated currentSegJunctions:", this.currentSegJunctions);
-        } else {
-          console.error("Data is not there");
-        }
-      },
-      error: (err) => {
-        console.error("Error retrieving data:", err);
-      },
-    });
+        // Sort by position if present
+        const sortedData = data.slice().sort((a, b) => {
+          if (typeof a.position === 'number' && typeof b.position === 'number') {
+            return a.position - b.position;
+          }
+          return 0;
+        });
 
+        sortedData.forEach((event) => {
+          this.events.push(this.createEventFormGroup(event));
+        });
+
+        // Ensure currentSegJunctions is updated
+        this.currentSegJunctions = sortedData;
+        console.log("Updated currentSegJunctions:", this.currentSegJunctions);
+      } else {
+        console.error("Data is not there");
+      }
+    },
+    error: (err) => {
+      console.error("Error retrieving data:", err);
+    },
+  });
     console.log("Current Seg: ", this.currentSeg);
     console.log("Current Junctions: ", this.currentSegJunctions);
   }
@@ -409,7 +417,7 @@ export class InputComponent implements OnInit {
 
     // Call the service method with corrected structure
     this.inputService.inputForm(requestParameters).subscribe({
-      next: (response) => console.log("Successfully submitted:", response),
+      next: (response) => this.router.navigate(['/submission']),
       error: (err) => console.error("Submission error:", err),
       });
   }

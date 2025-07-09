@@ -25,7 +25,8 @@ export class TooltipComponent {
       {
         label: 'Core Functions',
         items: [
-          { label: 'Home', route: '/', icon: 'pi pi-home'},
+          // { lable: 'Home', route: '/', icon: 'pi pi-home' },
+          { label: 'Select Test', route: '/test', icon: 'pi pi-server'},
           { label: 'Form Input', route: '/input', icon: 'pi pi-plus' },
           { label: 'Submissions', route: '/submission', icon: 'pi pi-book' },
           { label: 'Report Card', route: '/reportcard', icon: 'pi pi-file-pdf' }
@@ -36,7 +37,7 @@ export class TooltipComponent {
         items: [
           { label: 'Generate New SEGs', route: '/inputseg', icon: 'pi pi-plus' },
           { label: 'Edit/Delete Existing SEGs', route: '/records', icon: 'pi pi-database' },
-          { label: 'Analytics', route: '/analytics', icon: 'pi pi-chart-line' }
+          // { label: 'Analytics', route: '/analytics', icon: 'pi pi-chart-line' }
         ]
       },
       // OBS controls are hard corded - Look in html

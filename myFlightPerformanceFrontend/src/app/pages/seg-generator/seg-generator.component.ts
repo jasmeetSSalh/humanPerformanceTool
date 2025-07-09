@@ -96,18 +96,14 @@ export class SegGeneratorComponent implements OnInit {
     });
   }
 
-  async ngOnInit(){
-    // to load Data before proceeding
-    await this.loadData();
-    
-    // Now handle the route parameters if router got any
+  async ngOnInit() {
+    await this.loadDataPromise(); // make sure master data is loaded
+
     this.route.paramMap.subscribe(async params => {
       const SegId = params.get('SegId');
       if (SegId) {
         this.editMode = true;
         this.currentSegId = +SegId;
-        
-        // Wait for loadDocumentData to finish
         this.loadDocumentData(this.currentSegId);
       }
     });
@@ -115,26 +111,27 @@ export class SegGeneratorComponent implements OnInit {
 
   // -------------------------------------- Field Data Loading Function ------------------------------------------- v
 
-  loadData(): void {
-    forkJoin({
-      malfunctions: this.segFormService.getMalfunctions(),
-      procedures: this.segFormService.getProcedures(),
-      others: this.segFormService.getOthers(),
-      observations: this.segFormService.getObservations()
-    }).subscribe({
-
-      next: (data) => {
-
-        this.$existingMalfunctions = data.malfunctions || [];
-        this.$existingProcedures = data.procedures || [];
-        this.$existingOthers = data.others || [];
-        this.$existingObservation = data.observations || [];
-  
-        this.updateMasterSelection();
-      },
-      error: (error) => {
-        console.error("Error in loadData:", error);
-      }
+  loadDataPromise(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      forkJoin({
+        malfunctions: this.segFormService.getMalfunctions(),
+        procedures: this.segFormService.getProcedures(),
+        others: this.segFormService.getOthers(),
+        observations: this.segFormService.getObservations()
+      }).subscribe({
+        next: (data) => {
+          this.$existingMalfunctions = data.malfunctions || [];
+          this.$existingProcedures = data.procedures || [];
+          this.$existingOthers = data.others || [];
+          this.$existingObservation = data.observations || [];
+          this.updateMasterSelection();
+          resolve();
+        },
+        error: (error) => {
+          console.error("Error in loadData:", error);
+          reject(error);
+        }
+      });
     });
   }
   
@@ -146,14 +143,14 @@ export class SegGeneratorComponent implements OnInit {
   
 
   // ------------------------------------------------ Edit Mode ----------------------------------- v
+
+
   loadDocumentData(SegId: number) {
     this.recordFormService.getSpecificSegDocument(SegId).subscribe({
-      next: (data) => {
-        if (data.segDocumentInput && data.segDocumentJunctionsInput) {
-
-          //SEG Document
+    next: (data) => {
+      if (data.segDocumentInput && data.segDocumentJunctionsInput) {
+        // Patch segDocument fields as before ...
           const segDocument = data.segDocumentInput;
-
          
           const creationDate = segDocument.creationDate ? new Date(segDocument.creationDate).toISOString().split('T')[0] : '';
           console.log("Creation Date From Backend: ", creationDate);
@@ -165,69 +162,38 @@ export class SegGeneratorComponent implements OnInit {
             CreationDate: creationDate,
             CreatedBy: segDocument.createdBy,
           });
-
-
-          //SEG Junctions
-          const junctions = Array.isArray(data.segDocumentJunctionsInput)
-            ? data.segDocumentJunctionsInput
-            : [];
-
-          //console.log("Junctions Data Before Loop:", junctions);
-
-          if (junctions.length === 0) {
-            console.warn("No junctions found. Skipping forEach.");
-            return;
+        // Prepare and sort junctions
+        const junctions = Array.isArray(data.segDocumentJunctionsInput)
+          ? data.segDocumentJunctionsInput.slice()
+          : [];
+        junctions.sort((a, b) => {
+          if (typeof a.position === 'number' && typeof b.position === 'number') {
+            return a.position - b.position;
           }
+          return 0;
+        });
 
-          const junctionArray = this.segForm.get("segDocumentJunction") as FormArray;
-          if (!junctionArray) {
-            console.error("segDocumentJunction FormArray is missing in the form.");
-            return;
-          }
+        const junctionArray = this.segForm.get("segDocumentJunction") as FormArray;
+        junctionArray.clear();
 
-          // Inside loadDocumentData
-          junctions.forEach((junction: SegDocumentJunctionJson, index: number) => {
-            //console.log(`Processing Junction ${index}:`, junction);
-
-            this.loadData();
-
-            // console.log("Loaded malfunctions:", this.$existingMalfunctions);
-            // console.log("Loaded procedures:", this.$existingProcedures);
-            // console.log("Loaded others:", this.$existingOthers);
-            // console.log("Loaded observations:", this.$existingObservation);
-
-
-            // Ensure obsId is always an array
-            const trigIdRead = +junction.trigId;
-
-            //console.log("Trig Id: ", trigIdRead);
-
-            const masterSelection = this.getCategoryLabelBytrigId(junction.trigId);
-            const malfunction = this.$existingMalfunctions.find(item => item.trigId === trigIdRead);
-            
-            //console.log("There is the event trigger label: ", malfunction);
-            //console.log(masterSelection);
-
-            const eventTrigger = this.getEventTriggerBytrigId(trigIdRead);
-            //console.log(eventTrigger);
-
-            const behavioursArray = Array.isArray(junction.obsId) ? junction.obsId : [];
-            const behaviours = this.getBehavioursByIds(behavioursArray);
-            //console.log(behaviours);
-
-            //Add junction one by one
-            this.addNewJunctionEditMode(masterSelection, eventTrigger, behaviours);
-            });
-
-          } else {
-            console.error("Error: segDocumentInput data is missing or malformed", data);
-          }},
-        error: (error) => {
-          console.error("An error occurred while fetching the document data:", error);
-        }
-      });
+        junctions.forEach((junction: SegDocumentJunctionJson, index: number) => {
+          const trigIdRead = +junction.trigId;
+          const masterSelection = this.getCategoryLabelBytrigId(junction.trigId);
+          const eventTrigger = this.getEventTriggerBytrigId(trigIdRead);
+          const behavioursArray = Array.isArray(junction.obsId) ? junction.obsId : [];
+          const behaviours = this.getBehavioursByIds(behavioursArray);
+          const position = typeof junction.position === 'number' ? junction.position : index;
+          this.addNewJunctionEditMode(masterSelection, eventTrigger, behaviours, position);
+        });
+      } else {
+        console.error("Error: segDocumentInput data is missing or malformed", data);
+      }
+    },
+    error: (error) => {
+      console.error("An error occurred while fetching the document data:", error);
     }
-
+  });
+}
 
   
   getCategoryLabelBytrigId(eventTriggerId: number): any {
@@ -296,6 +262,13 @@ export class SegGeneratorComponent implements OnInit {
 
   // -------------------------------- Junction Editing ------------------------------------- v
 
+  // Call this after any reordering or removal to update the position/index
+updateJunctionPositions() {
+  this.segDocumentJunction.controls.forEach((ctrl, idx) => {
+    ctrl.patchValue({ position: idx }, { emitEvent: false });
+  });
+}
+
   updateMasterSelection() {
     this.masterSelectionType = [
       { label: "Malfunction", array: this.$existingMalfunctions },
@@ -361,31 +334,40 @@ export class SegGeneratorComponent implements OnInit {
     return this.fb.group({
       CurrentMasterSelections: [''],
       CurrentEventTrigger: [''],
-      CurrentBehaviours: [[]]
+      CurrentBehaviours: [[]],
+      position: [this.segDocumentJunction.length] // Set to current length
     });
   }
 
-  addNewJunctionEditMode(MasterSelection: any, EventTrigger: EventTrigger, Behaviours: Observation[]){
-    this.segDocumentJunction.push(this.createSegDocumentJunctionWithParams(MasterSelection, EventTrigger, Behaviours));
-  }
+addNewJunctionEditMode(
+  MasterSelection: any,
+  EventTrigger: EventTrigger,
+  Behaviours: Observation[],
+  position: number
+) {
+  this.segDocumentJunction.push(
+    this.createSegDocumentJunctionWithParams(MasterSelection, EventTrigger, Behaviours, position)
+  );
+}
 
-  createSegDocumentJunctionWithParams(MasterSelection: string, EventTrigger: EventTrigger, Behaviours: Observation[])
-  {
+createSegDocumentJunctionWithParams(
+  MasterSelection: string,
+  EventTrigger: EventTrigger,
+  Behaviours: Observation[],
+  position: number
+) {
+  return this.fb.group({
+    CurrentMasterSelections: [MasterSelection],
+    CurrentEventTrigger: [EventTrigger],
+    CurrentBehaviours: [Behaviours],
+    position: [position]
+  });
+}
 
-    console.log(MasterSelection);
-    console.log(EventTrigger);
-    console.log(Behaviours);
-
-    return this.fb.group({
-      CurrentMasterSelections: [MasterSelection],
-      CurrentEventTrigger: [EventTrigger],
-      CurrentBehaviours: [Behaviours]
-    })
-  }
-
-  removeJunction(index: number) {
-    this.segDocumentJunction.removeAt(index);
-  }
+removeJunction(index: number) {
+  this.segDocumentJunction.removeAt(index);
+  this.updateJunctionPositions();
+}
 
   // Handle drag and drop reordering
   dropJunction(event: CdkDragDrop<string[]>) {
@@ -394,6 +376,7 @@ export class SegGeneratorComponent implements OnInit {
       event.previousIndex,
       event.currentIndex
     );
+    this.updateJunctionPositions();
   }
 
 
@@ -402,22 +385,15 @@ export class SegGeneratorComponent implements OnInit {
   // Move item up in the array
   moveUp(index: number) {
     if (index > 0) {
-      moveItemInArray(
-        this.segDocumentJunction.controls,
-        index,
-        index - 1
-      );
+      moveItemInArray(this.segDocumentJunction.controls, index, index - 1);
+      this.updateJunctionPositions();
     }
   }
 
-  // Move item down in the array
   moveDown(index: number) {
     if (index < this.segDocumentJunction.length - 1) {
-      moveItemInArray(
-        this.segDocumentJunction.controls,
-        index,
-        index + 1
-      );
+      moveItemInArray(this.segDocumentJunction.controls, index, index + 1);
+      this.updateJunctionPositions();
     }
   }
 

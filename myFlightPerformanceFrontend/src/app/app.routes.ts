@@ -9,7 +9,7 @@ import { ReportCardComponent } from './pages/report-card/report-card.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'home', component: HomeComponent },
+  { path: 'test', component: HomeComponent },
 
   { path: 'input', component: InputComponent },
 
