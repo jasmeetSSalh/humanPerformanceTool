@@ -72,12 +72,13 @@ export class InputComponent implements OnInit {
   ];
 
   focusAreas = [
-    { label: 'Procedure Use'},
+    { label: 'Procedure Use & Adherence'},
     { label: 'Briefings'},
     { label: 'Communications'},
     { label: 'Stop When Unsure'},
     { label: 'Self Check'},
     { label: 'Conservatism'},
+    { label: 'Situational Awareness'},
     { label: 'Second Party Verification'}
   ]
   
@@ -121,18 +122,42 @@ export class InputComponent implements OnInit {
       c11: [false],
       c12: [false],
       c13: [false],
+
       checked: [false],
+
       pilotL: [],
       pilotR: [],
+
       events: this.fb.array([]), // Holds all events dynamically
       
       currentFocusArea: [], // Add default null value
+
+
       leftProceduralScore: [0],
       rightProceduralScore: [0],
+
+      leftBriefingScore: [0],
+      rightBriefingScore: [0],
+
+      leftCommunicationScore: [0],
+      rightCommunicationScore: [0],
+
+      leftStopWhenUnsureScore: [0],
+      rightStopWhenUnsureScore: [0],
+
+      leftSelfCheckScore: [0],
+      rightSelfCheckScore: [0],
+
+      leftConservatismScore: [0],
+      rightConservatismScore: [0],
+
       leftSituationalScore: [0],
       rightSituationalScore: [0],
+
       leftVerificationScore: [0],
       rightVerificationScore: [0],
+
+
       leftOverallScore: [0],
       rightOverallScore: [0]
     
@@ -270,7 +295,7 @@ export class InputComponent implements OnInit {
       const observationsArray = eventGroup.get("observations") as FormArray;
 
       observationsArray.controls.forEach(observation => {
-        const gradeControl = observation.get(pilot === "l" ? "lGrade": "rGrade");
+        const gradeControl = observation.get(pilot === "r" ? "rGrade": "lGrade");
         if (gradeControl) {
           const grade = gradeControl.get("grade")?.value;
           if (grade !== undefined) {
@@ -287,32 +312,57 @@ export class InputComponent implements OnInit {
     let leftScore =
       this.inputForm.get("leftProceduralScore")?.value +
       this.inputForm.get("leftSituationalScore")?.value +
-      this.inputForm.get("leftVerificationScore")?.value;
+      this.inputForm.get("leftVerificationScore")?.value; +
+      this.inputForm.get("leftBriefingScore")?.value +
+      this.inputForm.get("leftCommunicationScore")?.value +
+      this.inputForm.get("leftStopWhenUnsureScore")?.value +
+      this.inputForm.get("leftSelfCheckScore")?.value +
+      this.inputForm.get("leftConservatismScore")?.value
+
     let rightScore =
       this.inputForm.get("rightProceduralScore")?.value +
       this.inputForm.get("rightSituationalScore")?.value +
-      this.inputForm.get("rightVerificationScore")?.value;
+      this.inputForm.get("rightVerificationScore")?.value +
+      this.inputForm.get("rightBriefingScore")?.value +
+      this.inputForm.get("rightCommunicationScore")?.value +
+      this.inputForm.get("rightStopWhenUnsureScore")?.value +
+      this.inputForm.get("rightSelfCheckScore")?.value +
+      this.inputForm.get("rightConservatismScore")?.value
+
   
     leftScore = leftScore + this.GetFocusAreaScore("l");
+
     rightScore = rightScore + this.GetFocusAreaScore("r");
+
+
+
+    this.inputForm.patchValue({
+      rightProceduralScore : this.inputForm.get("rightProceduralScore")?.value,
+      rightSituationalScore : this.inputForm.get("rightSituationalScore")?.value,
+      rightVerificationScore: this.inputForm.get("rightVerificationScore")?.value,
+      rightBriefingScore: this.inputForm.get("rightBriefingScore")?.value,
+      rightCommunicationScore: this.inputForm.get("rightCommunicationScore")?.value,
+      rightStopWhenUnsureScore: this.inputForm.get("rightStopWhenUnsureScore")?.value,
+      rightSelfCheckScore: this.inputForm.get("rightSelfCheckScore")?.value,
+      rightConservatismScore: this.inputForm.get("rightConservatismScore")?.value,
+      rightOverallScore: rightScore
+    })
 
     this.inputForm.patchValue({
       leftProceduralScore : this.inputForm.get("leftProceduralScore")?.value,
       leftSituationalScore : this.inputForm.get("leftSituationalScore")?.value,
       leftVerificationScore: this.inputForm.get("leftVerificationScore")?.value,
+      leftBriefingScore: this.inputForm.get("leftBriefingScore")?.value,
+      leftCommunicationScore: this.inputForm.get("leftCommunicationScore")?.value,
+      leftStopWhenUnsureScore: this.inputForm.get("leftStopWhenUnsureScore")?.value,
+      leftSelfCheckScore: this.inputForm.get("leftSelfCheckScore")?.value,
+      leftConservatismScore: this.inputForm.get("leftConservatismScore")?.value,
       leftOverallScore: leftScore
     
     });
-    this.inputForm.patchValue({
-      rightProceduralScore : this.inputForm.get("rightProceduralScore")?.value,
-      rightSituationalScore : this.inputForm.get("rightSituationalScore")?.value,
-      rightVerificationScore: this.inputForm.get("rightVerificationScore")?.value,
-      rightOverallScore: rightScore
-    })
   }
   
   onStepClick(event: Event) {
-    //console.log('Step clicked', event);
     event.preventDefault(); // Prevent unexpected form submission
   }
 
@@ -396,6 +446,68 @@ export class InputComponent implements OnInit {
     });
 
     observedGradeSummaryFromForm.push({
+      category: Categories.Briefing,
+      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+      score: this.inputForm.get("leftBriefingScore")?.value
+    });
+    observedGradeSummaryFromForm.push({
+      category: Categories.Briefing,
+      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+      score: this.inputForm.get("rightBriefingScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.Communication,
+      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+      score: this.inputForm.get("leftCommunicationScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.Communication,
+      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+      score: this.inputForm.get("rightCommunicationScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.StopWhenUnsure,
+      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+      score: this.inputForm.get("leftStopWhenUnsureScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.StopWhenUnsure,
+      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+      score: this.inputForm.get("rightStopWhenUnsureScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.SelfCheck,
+      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+      score: this.inputForm.get("leftSelfCheckScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.SelfCheck,
+      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+      score: this.inputForm.get("rightSelfCheckScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.Conservatism,
+      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+      score: this.inputForm.get("leftConservatismScore")?.value
+    });
+
+    observedGradeSummaryFromForm.push({
+      category: Categories.Conservatism,
+      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+      score: this.inputForm.get("rightConservatismScore")?.value
+    });
+
+
+
+
+    observedGradeSummaryFromForm.push({
       category: Categories.OverallScore,
       pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
       score: this.inputForm.get("leftOverallScore")?.value
@@ -408,7 +520,7 @@ export class InputComponent implements OnInit {
     
 
 
-    // Correcting request payload structure
+    // request payload 
     const requestParameters = {
       observedEventInput: observedEventFromForm,
       observeredGradesInput: observedGradesFromForm,

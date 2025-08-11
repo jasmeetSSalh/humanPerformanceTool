@@ -162,6 +162,7 @@
                         <div class="flex-auto flex justify-center items-center">
                             <div class="rounded bg-surface-700 justify-center items-center font-medium">
                                 <p-table [tableStyle]="{'min-width': '55rem'}" showGridlines>
+                                    
                                     <ng-template pTemplate="header">
                                         <tr>
                                             <th class="w-3 bg-gray-600">Category</th>
@@ -187,32 +188,97 @@
                                             <th>{{ GetFocusAreaScore("l") }}</th>
                                             <th>{{ GetFocusAreaScore("r") }}</th>
                                         </tr>
+
                                         <tr>
                                             <th>Procedural Use & Adherence</th>
                                             <th>
-                                                <p-inputnumber  formControlName="leftProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" ></p-inputnumber>
-                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftProceduralScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                                <p-inputnumber  formControlName="leftProceduralScore"  [min]="0" [max]="10" class="w-full mb-4"  />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftProceduralScore" class="w-full" (onChange)="calculateOverallScore()" />
                                             </th>
                                             <th>
-                                                <p-inputnumber  formControlName="rightProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()"></p-inputnumber>
-                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightProceduralScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                                <p-inputnumber  formControlName="rightProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightProceduralScore" class="w-full" (onChange)="calculateOverallScore()" />
                                             </th>
                                         </tr>
+
+                                        <tr>
+                                            <th>Briefing</th>
+                                            <th>
+                                                <p-inputnumber  formControlName="leftBriefingScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftBriefingScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightBriefingScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightBriefingScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Communication</th>
+                                            <th>
+                                                <p-inputnumber  formControlName="leftCommunicationScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftCommunicationScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightCommunicationScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightCommunicationScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Stop When Unsure</th>
+                                            <th>
+                                                 <p-inputnumber  formControlName="leftStopWhenUnsureScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftStopWhenUnsureScore" class="w-full" (onChange)="calculateOverallScore()"/>
+
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightStopWhenUnsureScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightStopWhenUnsureScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Self Check</th>
+                                            <th>
+                                                <p-inputnumber  formControlName="leftSelfCheckScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftSelfCheckScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightSelfCheckScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightSelfCheckScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                        </tr>
+
+                                        <tr>
+                                            <th>Conservatism</th>
+                                            <th>
+                                                <p-inputnumber  formControlName="leftConservatismScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftConservatismScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                            <th>
+                                                <p-inputnumber  formControlName="rightConservatismScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightConservatismScore" class="w-full" (onChange)="calculateOverallScore()" />
+                                            </th>
+                                        </tr>
+
+
                                         <tr>
                                             <th>Situational Awareness</th>
                                             <th>
-                                                <p-inputnumber  formControlName="leftSituationalScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()"></p-inputnumber>
-                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftSituationalScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                                <p-inputnumber  formControlName="leftSituationalScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftSituationalScore" class="w-full" (onChange)="calculateOverallScore()" />
                                             </th>
                                             <th>
-                                                <p-inputnumber  formControlName="rightSituationalScore"  [min]="0" [max]="10" class="w-full mb-4" ></p-inputnumber>
-                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightSituationalScore" class="w-full" (onChange)="calculateOverallScore()"></p-slider>
+                                                <p-inputnumber  formControlName="rightSituationalScore"  [min]="0" [max]="10" class="w-full mb-4"  />
+                                                <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightSituationalScore" class="w-full" (onChange)="calculateOverallScore()" />
                                             </th>
                                         </tr>
+
                                         <tr>
                                             <th>Verification Practices</th>
                                             <th>
-                                                <input [min]="0" [max]="10" [step]="1"  type="number" pInputText formControlName="leftVerificationScore" class="w-full mb-4" (onChange)="calculateOverallScore()"/>
+                                                <p-inputnumber  formControlName="leftVerificationScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
                                                 <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftVerificationScore" class="w-full" (onChange)="calculateOverallScore()"/>
                                             </th>
                                             <th>
@@ -220,10 +286,11 @@
                                                 <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightVerificationScore" class="w-full" (onChange)="calculateOverallScore()"/>
                                             </th>
                                         </tr>
+
                                         <tr>
                                             <th>Overall Score</th>
-                                            <th><p-inputnumber [disabled]="true" formControlName="leftOverallScore"></p-inputnumber></th>
-                                            <th><p-inputnumber [disabled]="true" formControlName="rightOverallScore"></p-inputnumber></th>
+                                            <th><p-inputnumber [disabled]="true" formControlName="leftOverallScore" /></th>
+                                            <th><p-inputnumber [disabled]="true" formControlName="rightOverallScore" /></th>
                                         </tr>
 
                                     </ng-template>
@@ -265,6 +332,7 @@
                                     <p><strong>Participant 1 (L):</strong> {{ inputForm.get('pilotL')?.value || 'N/A' }}</p>
                                 
                                     <p><strong>Participant 2 (R):</strong> {{ inputForm.get('pilotR')?.value || 'N/A' }}</p>
+
                                     <p><strong>Overall Scores:</strong> P1: {{ inputForm.get('leftOverallScore')?.value || 'N/A' }}, 
                                         P2: {{ inputForm.get('rightOverallScore')?.value || 'N/A' }}</p>
                                 </div>
