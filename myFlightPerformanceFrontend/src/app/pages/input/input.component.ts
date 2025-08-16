@@ -422,7 +422,7 @@ export class InputComponent implements OnInit {
       pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
       score: this.inputForm.get("rightProceduralScore")?.value
     });
-
+    
     observedGradeSummaryFromForm.push({
       category: Categories.SituationalAwareness,
       pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
