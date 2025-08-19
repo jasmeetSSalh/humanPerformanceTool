@@ -1,95 +1,91 @@
 <div class="container">
-    <p-table
-      #dt2
-      [value]="observedEventsList"
-      dataKey="eventId"
-      [rows]="25"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      [paginator]="true"
-      class="styled-table"
-    >
-      <ng-template #header>
-        <tr>
-            <th>Event Id</th>
-            <th>Seg Id</th>
-            <th>Creation Date</th>
-            <th>Flying Pilot</th>
-            <th>Non-Flying Pilot</th>
-            <th>Focus Area</th>
-          <!-- <th>Training Program</th> -->
-          <th>Functions</th>
-        </tr>
-        <tr>
-          <th>
-            <p-columnFilter
-              type="text"
-              field="eventId"
-              placeholder="Event ID"
-            ></p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              type="text"
-              field="segId"
-              placeholder="SegId"
-            ></p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              type="date"
-              field="eventCreationDate"
-              placeholder="Date"
-            ></p-columnFilter>
-  
-          </th>
-          <th>
-            <p-columnFilter
-              type="text"
-              field="flyingPilot"
-              placeholder="Flying Pilot"
-            ></p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              type="text"
-              field="nonFlyingPilot"
-              placeholder="Non Flying Pilot"
-            ></p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              type="text"
-              field="focusArea"
-              placeholder="focus area"
-            ></p-columnFilter>
-          </th>
-          <th>Functions</th>
-        </tr>
-      </ng-template>
-  
-      <ng-template #body let-observedEvent let-columns="columns">
+  <p-table
+    #dt2
+    [value]="observedEventsList"
+    dataKey="eventId"
+    [rows]="50"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [paginator]="true"
+    [scrollable]="true"
+    class="styled-table"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Delete</th>
+        <th>Event Id</th>
+        <th style="max-width: 10%;">Functions</th>
 
-        <tr>
-          <td>{{ observedEvent.eventId }}</td>
-          <td>{{ observedEvent.segId }}</td>
-          <td>{{ observedEvent.eventCreationDate | date: 'yyyy/MM/dd' }}</td>
-  
-          <td>{{ observedEvent.flyingPilot }}</td>
-          <td>{{ observedEvent.nonFlyingPilot }}</td>
-          <td>{{ observedEvent.focusArea }}</td>
-          <!-- <td>{{ seg.TrainingProgram }}</td> -->
-          <td>
-            <!-- <p-button (onClick)="editSeg(seg.segId)" severity="success" class="edit-btn">Edit</p-button> -->
-            <p-button (onClick)="deleteEvent(observedEvent.eventId)" severity="danger" class="delete-btn">Delete</p-button>
-          </td>
-        </tr>
-      </ng-template>
-  
-      <ng-template #emptymessage>
-        <tr>
-          <td colspan="7">No records found.</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
-  
+        <th>Creation Date</th>
+        <th>Flying Pilot</th>
+        <th>Non-Flying Pilot</th>
+        <th>Focus Area</th>
+        <th>Seg Id</th>
+
+      </tr>
+      <tr>
+        <th>
+          Delete Event
+        </th>
+        <th style="max-width: 10rem;">
+          <p-columnFilter type="text" field="eventId" placeholder="Event ID"></p-columnFilter>
+        </th>
+         <th style="max-width: 10rem;">Functions</th>
+        <th style="max-width: 10rem;">
+          <p-columnFilter type="date" field="eventCreationDate" placeholder="Date"></p-columnFilter>
+        </th>
+        <th style="max-width: 10rem;">
+          <p-columnFilter type="text" field="flyingPilot" placeholder="Flying Pilot"></p-columnFilter>
+        </th>
+        <th style="max-width: 10rem;">
+          <p-columnFilter type="text" field="nonFlyingPilot" placeholder="Non Flying Pilot"></p-columnFilter>
+        </th>
+        <th style="max-width: 10rem;">
+          <p-columnFilter type="text" field="focusArea" placeholder="Focus Area"></p-columnFilter>
+        </th>
+       
+        <th style="max-width: 10rem;">
+          <p-columnFilter type="text" field="segId" placeholder="SegId"></p-columnFilter>
+        </th>
+      </tr>
+
+    </ng-template>
+
+    <ng-template pTemplate="body" let-observedEvent>
+      <tr>
+        <td><p-button (onClick)="deleteEvent(observedEvent.eventId)" severity="danger" class="delete-btn">Delete</p-button></td>
+        <td>{{ observedEvent.eventId }}</td>
+        <td>
+          <p-button
+            (onClick)="downloadP1(observedEvent.eventId, observedEvent.segId, observedEvent.flyingPilot)"
+            severity="secondary"
+            class="edit-btn"
+          >P1 Report Card</p-button>
+          <p-button
+            (onClick)="downloadP2(observedEvent.eventId, observedEvent.segId, observedEvent.nonFlyingPilot)"
+            severity="secondary"
+            class="edit-btn"
+          >P2 Report Card</p-button>
+
+          <!-- <p-button
+            (onClick)=""
+            severity="secondary"
+            class="edit-btn"
+          >Edit Event</p-button> -->
+        </td>
+        <td>{{ observedEvent.eventCreationDate | date: 'yyyy/MM/dd' }}</td>
+        <td>{{ observedEvent.flyingPilot }}</td>
+        <td>{{ observedEvent.nonFlyingPilot }}</td>
+        <td>{{ observedEvent.focusArea }}</td>
+        <td>{{ observedEvent.segId }}</td>
+
+
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7">No records found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

@@ -46,6 +46,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "DocX": {
+              "target": "Package",
+              "version": "[1.7.0, )"
+            },
             "EFCore.BulkExtensions": {
               "target": "Package",
               "version": "[9.0.1, )"
@@ -69,6 +73,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[9.0.1, )"
+            },
+            "System.IO.Packaging": {
+              "target": "Package",
+              "version": "[9.0.8, )"
             }
           },
           "imports": [

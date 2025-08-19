@@ -471,3 +471,6 @@ C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\o
 C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\obj\Debug\net8.0\myFlightPerformance.pdb
 C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\obj\Debug\net8.0\myFlightPerformance.genruntimeconfig.cache
 C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\obj\Debug\net8.0\ref\myFlightPerformance.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Xceed.Document.NET.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Xceed.Words.NET.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\System.IO.Packaging.dll

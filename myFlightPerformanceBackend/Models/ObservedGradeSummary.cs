@@ -16,5 +16,6 @@ public class ObservedGradesInstructorCritique
     public required string Category {get; set;}
     public required int PilotEmpId {get; set;}
     public required int Score {get; set;}
+    public required string Comment {get; set;}
 
 }

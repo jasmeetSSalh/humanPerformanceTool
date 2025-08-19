@@ -2,6 +2,17 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "DocX/1.7.0": {
+        "type": "package",
+        "compile": {
+          "lib/net40/Xceed.Document.NET.dll": {},
+          "lib/net40/Xceed.Words.NET.dll": {}
+        },
+        "runtime": {
+          "lib/net40/Xceed.Document.NET.dll": {},
+          "lib/net40/Xceed.Words.NET.dll": {}
+        }
+      },
       "EFCore.BulkExtensions/9.0.1": {
         "type": "package"
       },
@@ -1115,6 +1126,22 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "System.IO.Packaging/9.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.IO.Packaging.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.IO.Packaging.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
       "System.IO.Pipelines/9.0.2": {
         "type": "package",
         "compile": {
@@ -1236,6 +1263,22 @@
     }
   },
   "libraries": {
+    "DocX/1.7.0": {
+      "sha512": "nNapS06LBhlvYYNAj2/ouDhTvwqfcYp3JbbexkE5fYFx4cT7SA5g3QHWkkWf6YsiMfv79Jhwe6WrVhTuROJclg==",
+      "type": "package",
+      "path": "docx/1.7.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "docx.1.7.0.nupkg.sha512",
+        "docx.nuspec",
+        "lib/net40/Xceed.Document.NET.dll",
+        "lib/net40/Xceed.Words.NET.dll",
+        "tools/install.ps1"
+      ]
+    },
     "EFCore.BulkExtensions/9.0.1": {
       "sha512": "exOdMFHAFTzE19ux2Kyhqv+vWsyUYrdYC5euxaLOzQ3Mukm3sRdXiXyYuLoJknTxJoM86rVHYvXZD9HFPcZTBQ==",
       "type": "package",
@@ -3239,6 +3282,33 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "System.IO.Packaging/9.0.8": {
+      "sha512": "kiJieCou3tqiwnLONZy4F47L0PSOt1WI9YefIuuAQ8idK3Svf+QQ0N1MsQib/QW46NM06HXkjlrSInvJ8dQjIA==",
+      "type": "package",
+      "path": "system.io.packaging/9.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.IO.Packaging.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.IO.Packaging.targets",
+        "lib/net462/System.IO.Packaging.dll",
+        "lib/net462/System.IO.Packaging.xml",
+        "lib/net8.0/System.IO.Packaging.dll",
+        "lib/net8.0/System.IO.Packaging.xml",
+        "lib/net9.0/System.IO.Packaging.dll",
+        "lib/net9.0/System.IO.Packaging.xml",
+        "lib/netstandard2.0/System.IO.Packaging.dll",
+        "lib/netstandard2.0/System.IO.Packaging.xml",
+        "system.io.packaging.9.0.8.nupkg.sha512",
+        "system.io.packaging.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.IO.Pipelines/9.0.2": {
       "sha512": "UIBaK7c/A3FyQxmX/747xw4rCUkm1BhNiVU617U5jweNJssNjLJkPUGhBsrlDG0BpKWCYKsncD+Kqpy4KmvZZQ==",
       "type": "package",
@@ -3476,11 +3546,13 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "DocX >= 1.7.0",
       "EFCore.BulkExtensions >= 9.0.1",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.2",
       "Microsoft.EntityFrameworkCore.Sqlite >= 9.0.2",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.2",
-      "Swashbuckle.AspNetCore >= 9.0.1"
+      "Swashbuckle.AspNetCore >= 9.0.1",
+      "System.IO.Packaging >= 9.0.8"
     ]
   },
   "packageFolders": {
@@ -3528,6 +3600,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "DocX": {
+            "target": "Package",
+            "version": "[1.7.0, )"
+          },
           "EFCore.BulkExtensions": {
             "target": "Package",
             "version": "[9.0.1, )"
@@ -3551,6 +3627,10 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[9.0.1, )"
+          },
+          "System.IO.Packaging": {
+            "target": "Package",
+            "version": "[9.0.8, )"
           }
         },
         "imports": [
@@ -3575,5 +3655,17 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'DocX 1.7.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "libraryId": "DocX",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { StepperModule } from "primeng/stepper";
 import { ButtonModule } from "primeng/button";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -27,12 +27,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ObservedEvent } from "../../models/observedEvent";
 import { Categories, ObservedGradeSummary } from "../../models/observedGradeSumary";
-
+import { TextareaModule } from 'primeng/textarea';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 
 @Component({
   selector: "app-input",
   imports: [
+    SelectButtonModule,
     RadioButtonModule,
     SelectModule,
     DividerModule,
@@ -47,6 +49,7 @@ import { Categories, ObservedGradeSummary } from "../../models/observedGradeSuma
     InputNumberModule,
     SliderModule,
     InputTextModule,
+    TextareaModule
   ],
   standalone: true,
   templateUrl: "./input.component.html",
@@ -58,18 +61,19 @@ export class InputComponent implements OnInit {
   currentSeg: SegDocument = {} as SegDocument;
   currentSegJunctions: SegFormInputJunction[] = [];
 
-
   pilotGradesL: ObservedGrade[] = [];
   pilotGradesR: ObservedGrade[] = [];
 
-  pilotLGrades: number[][] = []; // Stores grades for Pilot L
-  pilotRGrades: number[][] = []; // Stores grades for Pilot R
+  pilotLGrades: number[][] = [];
+  pilotRGrades: number[][] = [];
 
   grades = [
     { label: 'Negative One', value: GradeValue.NegativeOne },
     { label: 'Zero', value: GradeValue.Zero },
     { label: 'One', value: GradeValue.One }
   ];
+
+ 
 
   focusAreas = [
     { label: 'Procedure Use & Adherence'},
@@ -80,9 +84,12 @@ export class InputComponent implements OnInit {
     { label: 'Conservatism'},
     { label: 'Situational Awareness'},
     { label: 'Second Party Verification'}
-  ]
-  
 
+  ]
+
+
+
+  
   checkListPreEventData = [
     { label: "Clear all malfunctions and reset all quantities in simulator",var: "c1",},
     { label:"Reset coordinator PC to show correct flight plan and remove past aircraft track.", var: "c2",},
@@ -100,13 +107,30 @@ export class InputComponent implements OnInit {
   ];
 
   segJunctionOtherSectionValueVarForm: number = 0;
+  
+
+  // Step loading performance: Only render critique step panel when active
+  stepActive: boolean = false;
+
+  // Optionally, provide a style object for textareas to bind in template
+  commentAreaStyle = {
+    width: '100%',
+    minWidth: '200px',
+    maxWidth: '400px'
+  };
+
+  stateOptions: any[] = [
+        { label: 'Off', value: 'off' },
+        { label: 'On', value: 'on' }
+    ];
 
   constructor(
     private router: Router,
     private inputService: InputService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-   
+   private cdr: ChangeDetectorRef
+
   ) {
     this.inputForm = this.fb.group({
       c1: [false],
@@ -125,6 +149,7 @@ export class InputComponent implements OnInit {
 
       checked: [false],
 
+
       pilotL: [],
       pilotR: [],
 
@@ -132,47 +157,81 @@ export class InputComponent implements OnInit {
       
       currentFocusArea: [], // Add default null value
 
+      useProcedural: [true],
+      leftProceduralScore: [{ value: 0, disabled: false }],
+      leftProceduralComment: [{ value: '', disabled: false }],
+      rightProceduralScore: [{ value: 0, disabled: false }],
+      rightProceduralComment: [{ value: '', disabled: false }],
 
-      leftProceduralScore: [0],
-      rightProceduralScore: [0],
+      useBriefing: [true],
+      leftBriefingScore: [{ value: 0, disabled: false }],
+      leftBriefingComment: [{ value: '', disabled: false }],
+      rightBriefingScore: [{ value: 0, disabled: false }],
+      rightBriefingComment: [{ value: '', disabled: false }],
 
-      leftBriefingScore: [0],
-      rightBriefingScore: [0],
+      useCommunication: [true],
+      leftCommunicationScore: [{ value: 0, disabled: false }],
+      leftCommunicationComment: [{ value: '', disabled: false }],
+      rightCommunicationScore: [{ value: 0, disabled: false }],
+      rightCommunicationComment: [{ value: '', disabled: false }],
 
-      leftCommunicationScore: [0],
-      rightCommunicationScore: [0],
+      useStopWhenUnsure: [true],
+      leftStopWhenUnsureScore: [{ value: 0, disabled: false }],
+      leftStopWhenUnsureComment: [{ value: '', disabled: false }],
+      rightStopWhenUnsureScore: [{ value: 0, disabled: false }],
+      rightStopWhenUnsureComment: [{ value: '', disabled: false }],
 
-      leftStopWhenUnsureScore: [0],
-      rightStopWhenUnsureScore: [0],
+      useSelfCheck: [true],
+      leftSelfCheckScore: [{ value: 0, disabled: false }],
+      leftSelfCheckComment: [{ value: '', disabled: false }],
+      rightSelfCheckScore: [{ value: 0, disabled: false }],
+      rightSelfCheckComment: [{ value: '', disabled: false }],
 
-      leftSelfCheckScore: [0],
-      rightSelfCheckScore: [0],
+      useConservatism: [true],
+      leftConservatismScore: [{ value: 0, disabled: false }],
+      leftConservatismComment: [{ value: '', disabled: false }],
+      rightConservatismScore: [{ value: 0, disabled: false }],
+      rightConservatismComment: [{ value: '', disabled: false }],
 
-      leftConservatismScore: [0],
-      rightConservatismScore: [0],
+      useSituational: [true],
+      leftSituationalScore: [{ value: 0, disabled: false }],
+      leftSituationalComment: [{ value: '', disabled: false }],
+      rightSituationalScore: [{ value: 0, disabled: false }],
+      rightSituationalComment: [{ value: '', disabled: false }],
 
-      leftSituationalScore: [0],
-      rightSituationalScore: [0],
+      useVerification: [true],
+      leftVerificationScore: [{ value: 0, disabled: false }],
+      leftVerificationComment: [{ value: '', disabled: false }],
+      rightVerificationScore: [{ value: 0, disabled: false }],
+      rightVerificationComment: [{ value: '', disabled: false }],
 
-      leftVerificationScore: [0],
-      rightVerificationScore: [0],
+      leftOverallComment: [{ value: '', disabled: false }],
+      rightOverallComment: [{ value: '', disabled: false }],
+
+      leftOverallScore: [{ value: 0, disabled: true }],
+      rightOverallScore: [{ value: 0, disabled: true }]
 
 
-      leftOverallScore: [0],
-      rightOverallScore: [0]
-    
     });
-
-   
   }
 
-  async ngOnInit(): Promise<void> {
+   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const segId = params.get("SegId");
       if (segId) {
         this.initializeSeg(+segId);
       }
     });
+  }
+
+  setEnableState(controlName: string, enabled: boolean) {
+    const ctrl = this.inputForm.get(controlName);
+    if (!ctrl) return;
+    if (enabled) {
+      ctrl.enable({ emitEvent: false });
+    } else {
+      ctrl.disable({ emitEvent: false });
+    }
   }
 
   initializeSeg(segId: number): void {
@@ -194,37 +253,29 @@ export class InputComponent implements OnInit {
       },
     });
 
-   this.inputService.getSpecificSegDocumentJunction(segId).subscribe({
-    next: (data) => {
-      console.log("Fetched Events Data:", data); // Debugging log
-      if (data) {
-        this.events.clear(); // Ensure we start fresh
-
-        // Sort by position if present
-        const sortedData = data.slice().sort((a, b) => {
-          if (typeof a.position === 'number' && typeof b.position === 'number') {
-            return a.position - b.position;
-          }
-          return 0;
-        });
-
-        sortedData.forEach((event) => {
-          this.events.push(this.createEventFormGroup(event));
-        });
-
-        // Ensure currentSegJunctions is updated
-        this.currentSegJunctions = sortedData;
-        console.log("Updated currentSegJunctions:", this.currentSegJunctions);
-      } else {
-        console.error("Data is not there");
-      }
-    },
-    error: (err) => {
-      console.error("Error retrieving data:", err);
-    },
-  });
-    console.log("Current Seg: ", this.currentSeg);
-    console.log("Current Junctions: ", this.currentSegJunctions);
+    this.inputService.getSpecificSegDocumentJunction(segId).subscribe({
+      next: (data) => {
+        if (data) {
+          this.events.clear();
+          // Sort by position if present
+          const sortedData = data.slice().sort((a, b) => {
+            if (typeof a.position === 'number' && typeof b.position === 'number') {
+              return a.position - b.position;
+            }
+            return 0;
+          });
+          sortedData.forEach((event) => {
+            this.events.push(this.createEventFormGroup(event));
+          });
+          this.currentSegJunctions = sortedData;
+        } else {
+          console.error("Data is not there");
+        }
+      },
+      error: (err) => {
+        console.error("Error retrieving data:", err);
+      },
+    });
   }
 
   get events(): FormArray {
@@ -246,7 +297,6 @@ export class InputComponent implements OnInit {
       ),
     });
   }
-  
 
   createObservationFormGroup(observation: any): FormGroup {
     return this.fb.group({
@@ -255,25 +305,22 @@ export class InputComponent implements OnInit {
       subCategory: [observation.subCategory],
       lGrade: this.fb.group({
         obsId: [observation.lGrade?.obsId || observation.obsId],
-        pilotEmpId: [null], // Now explicitly passing pilotL
+        pilotEmpId: [null],
         grade: [GradeValue.Zero],
       }),
       rGrade: this.fb.group({
         obsId: [observation.rGrade?.obsId || observation.obsId],
-        pilotEmpId: [null], // Now explicitly passing pilotR
+        pilotEmpId: [null],
         grade: [GradeValue.Zero],
       }),
     });
   }
   
-  
-  
-
   createObservedGradeFormGroup(obsId: number): FormGroup {
     return this.fb.group({
       obsId: obsId,
-      pilotEmpId: new FormControl(""), // User-inputted later
-      grade: new FormControl(GradeValue.Zero), // Default
+      pilotEmpId: new FormControl(""),
+      grade: new FormControl(GradeValue.Zero),
     });
   }
 
@@ -283,17 +330,30 @@ export class InputComponent implements OnInit {
 
   checkAllBoxes(): void {
     this.checkListPreEventData.forEach((item) => {
-      this.inputForm.get(item.var)?.setValue(true); // Automatically set the checkbox values to true
+      this.inputForm.get(item.var)?.setValue(true);
     });
+  }
+
+  GetObservationPoints(): number {
+
+    var observationPoints = 0;
+    this.events.controls.forEach(eventGroup => {
+        const observationsArray = eventGroup.get("observations") as FormArray;
+        // where the value is not zero
+        observationPoints += observationsArray.controls.filter(obs => obs.get("lGrade.grade")?.value !== 0).length;
+    });
+
+    return observationPoints;
   }
 
   GetFocusAreaScore(pilot: string): number {
 
-    let score: number = 24;
-    
+    let score: number = 0; // needs to updated to the number of observation points for each element
+    //console.log("Count of Triggers: ", this.currentSegJunctions.length);
+
+
     this.events.controls.forEach(eventGroup => {
       const observationsArray = eventGroup.get("observations") as FormArray;
-
       observationsArray.controls.forEach(observation => {
         const gradeControl = observation.get(pilot === "r" ? "rGrade": "lGrade");
         if (gradeControl) {
@@ -308,59 +368,63 @@ export class InputComponent implements OnInit {
   }
 
   calculateOverallScore(): void {
+      this.cdr.detectChanges();
 
-    let leftScore =
-      this.inputForm.get("leftProceduralScore")?.value +
-      this.inputForm.get("leftSituationalScore")?.value +
-      this.inputForm.get("leftVerificationScore")?.value; +
-      this.inputForm.get("leftBriefingScore")?.value +
-      this.inputForm.get("leftCommunicationScore")?.value +
-      this.inputForm.get("leftStopWhenUnsureScore")?.value +
-      this.inputForm.get("leftSelfCheckScore")?.value +
-      this.inputForm.get("leftConservatismScore")?.value
+    let leftScore = 0;
+    let rightScore = 0;
 
-    let rightScore =
-      this.inputForm.get("rightProceduralScore")?.value +
-      this.inputForm.get("rightSituationalScore")?.value +
-      this.inputForm.get("rightVerificationScore")?.value +
-      this.inputForm.get("rightBriefingScore")?.value +
-      this.inputForm.get("rightCommunicationScore")?.value +
-      this.inputForm.get("rightStopWhenUnsureScore")?.value +
-      this.inputForm.get("rightSelfCheckScore")?.value +
-      this.inputForm.get("rightConservatismScore")?.value
+    const focusAreas = [
+      { use: 'useProcedural', left: 'leftProceduralScore', right: 'rightProceduralScore' },
+      { use: 'useSituational', left: 'leftSituationalScore', right: 'rightSituationalScore' },
+      { use: 'useVerification', left: 'leftVerificationScore', right: 'rightVerificationScore' },
+      { use: 'useBriefing', left: 'leftBriefingScore', right: 'rightBriefingScore' },
+      { use: 'useCommunication', left: 'leftCommunicationScore', right: 'rightCommunicationScore' },
+      { use: 'useStopWhenUnsure', left: 'leftStopWhenUnsureScore', right: 'rightStopWhenUnsureScore' },
+      { use: 'useSelfCheck', left: 'leftSelfCheckScore', right: 'rightSelfCheckScore' },
+      { use: 'useConservatism', left: 'leftConservatismScore', right: 'rightConservatismScore' },
+    ];
 
-  
-    leftScore = leftScore + this.GetFocusAreaScore("l");
+    focusAreas.forEach(area => {
+      if (this.inputForm.get(area.use)?.value) {
+        leftScore += this.inputForm.get(area.left)?.value || 0;
+        rightScore += this.inputForm.get(area.right)?.value || 0;
+      }
+    });
 
-    rightScore = rightScore + this.GetFocusAreaScore("r");
-
-
+    leftScore += this.GetFocusAreaScore("l");
+    rightScore += this.GetFocusAreaScore("r");
 
     this.inputForm.patchValue({
-      rightProceduralScore : this.inputForm.get("rightProceduralScore")?.value,
-      rightSituationalScore : this.inputForm.get("rightSituationalScore")?.value,
-      rightVerificationScore: this.inputForm.get("rightVerificationScore")?.value,
-      rightBriefingScore: this.inputForm.get("rightBriefingScore")?.value,
-      rightCommunicationScore: this.inputForm.get("rightCommunicationScore")?.value,
-      rightStopWhenUnsureScore: this.inputForm.get("rightStopWhenUnsureScore")?.value,
-      rightSelfCheckScore: this.inputForm.get("rightSelfCheckScore")?.value,
-      rightConservatismScore: this.inputForm.get("rightConservatismScore")?.value,
+      // patch all the values in the form so they update in the ui
+      leftProceduralScore: this.inputForm.get('useProcedural')?.value ? this.inputForm.get('leftProceduralScore')?.value : 0,
+      rightProceduralScore: this.inputForm.get('useProcedural')?.value ? this.inputForm.get('rightProceduralScore')?.value : 0,
+
+      leftSituationalScore: this.inputForm.get('useSituational')?.value ? this.inputForm.get('leftSituationalScore')?.value : 0,
+      rightSituationalScore: this.inputForm.get('useSituational')?.value ? this.inputForm.get('rightSituationalScore')?.value : 0,
+
+      leftVerificationScore: this.inputForm.get('useVerification')?.value ? this.inputForm.get('leftVerificationScore')?.value : 0,
+      rightVerificationScore: this.inputForm.get('useVerification')?.value ? this.inputForm.get('rightVerificationScore')?.value : 0,
+
+      leftBriefingScore: this.inputForm.get('useBriefing')?.value ? this.inputForm.get('leftBriefingScore')?.value : 0,
+      rightBriefingScore: this.inputForm.get('useBriefing')?.value ? this.inputForm.get('rightBriefingScore')?.value : 0,
+
+      leftCommunicationScore: this.inputForm.get('useCommunication')?.value ? this.inputForm.get('leftCommunicationScore')?.value : 0,
+      rightCommunicationScore: this.inputForm.get('useCommunication')?.value ? this.inputForm.get('rightCommunicationScore')?.value : 0,
+
+      leftStopWhenUnsureScore: this.inputForm.get('useStopWhenUnsure')?.value ? this.inputForm.get('leftStopWhenUnsureScore')?.value : 0,
+      rightStopWhenUnsureScore: this.inputForm.get('useStopWhenUnsure')?.value ? this.inputForm.get('rightStopWhenUnsureScore')?.value : 0,
+
+      leftSelfCheckScore: this.inputForm.get('useSelfCheck')?.value ? this.inputForm.get('leftSelfCheckScore')?.value : 0,
+      rightSelfCheckScore: this.inputForm.get('useSelfCheck')?.value ? this.inputForm.get('rightSelfCheckScore')?.value : 0,
+
+      leftConservatismScore: this.inputForm.get('useConservatism')?.value ? this.inputForm.get('leftConservatismScore')?.value : 0,
+      rightConservatismScore: this.inputForm.get('useConservatism')?.value ? this.inputForm.get('rightConservatismScore')?.value : 0,
+
+      leftOverallScore: leftScore,
       rightOverallScore: rightScore
-    })
-
-    this.inputForm.patchValue({
-      leftProceduralScore : this.inputForm.get("leftProceduralScore")?.value,
-      leftSituationalScore : this.inputForm.get("leftSituationalScore")?.value,
-      leftVerificationScore: this.inputForm.get("leftVerificationScore")?.value,
-      leftBriefingScore: this.inputForm.get("leftBriefingScore")?.value,
-      leftCommunicationScore: this.inputForm.get("leftCommunicationScore")?.value,
-      leftStopWhenUnsureScore: this.inputForm.get("leftStopWhenUnsureScore")?.value,
-      leftSelfCheckScore: this.inputForm.get("leftSelfCheckScore")?.value,
-      leftConservatismScore: this.inputForm.get("leftConservatismScore")?.value,
-      leftOverallScore: leftScore
-    
     });
   }
+  
   
   onStepClick(event: Event) {
     event.preventDefault(); // Prevent unexpected form submission
@@ -411,115 +475,149 @@ export class InputComponent implements OnInit {
 
     const observedGradeSummaryFromForm: ObservedGradeSummary[] = [];
 
-    observedGradeSummaryFromForm.push({
-      category: Categories.ProceduralUseAdherence,
-      pilotEmpId: Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftProceduralScore")?.value
-    });
-    
-    observedGradeSummaryFromForm.push({
+    if (this.inputForm.get("useProcedural")?.value) {
+      observedGradeSummaryFromForm.push({
+        category: Categories.ProceduralUseAdherence,
+        pilotEmpId: Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftProceduralScore")?.value,
+        comment: this.inputForm.get("leftProceduralComment")?.value || ""
+      });
+
+      observedGradeSummaryFromForm.push({
       category: Categories.ProceduralUseAdherence,
       pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
       score: this.inputForm.get("rightProceduralScore")?.value
+      ,comment: this.inputForm.get("rightProceduralComment")?.value || ""
     });
-    
-    observedGradeSummaryFromForm.push({
-      category: Categories.SituationalAwareness,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftSituationalScore")?.value
-    });
-    observedGradeSummaryFromForm.push({
-      category: Categories.SituationalAwareness,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightSituationalScore")?.value
-    });
-    
-    observedGradeSummaryFromForm.push({
-      category: Categories.VerficationPractices,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftVerificationScore")?.value
-    });
-    observedGradeSummaryFromForm.push({
-      category: Categories.VerficationPractices,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightVerificationScore")?.value
-    });
+    }
 
-    observedGradeSummaryFromForm.push({
-      category: Categories.Briefing,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftBriefingScore")?.value
-    });
-    observedGradeSummaryFromForm.push({
-      category: Categories.Briefing,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightBriefingScore")?.value
-    });
+    if (this.inputForm.get("useSituational")?.value) {
+      observedGradeSummaryFromForm.push({
+        category: Categories.SituationalAwareness,
+        pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftSituationalScore")?.value
+        ,comment: this.inputForm.get("leftSituationalComment")?.value || ""
+      });
+      observedGradeSummaryFromForm.push({
+        category: Categories.SituationalAwareness,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightSituationalScore")?.value
+        ,comment: this.inputForm.get("rightSituationalComment")?.value || ""
+      });
+    }
 
-    observedGradeSummaryFromForm.push({
-      category: Categories.Communication,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftCommunicationScore")?.value
-    });
+    if (this.inputForm.get("useVerification")?.value) {
+        observedGradeSummaryFromForm.push({
+          category: Categories.VerficationPractices,
+          pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+          score: this.inputForm.get("leftVerificationScore")?.value
+        ,comment: this.inputForm.get("leftVerificationComment")?.value || ""
+      });
+      observedGradeSummaryFromForm.push({
+        category: Categories.VerficationPractices,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightVerificationScore")?.value
+        ,comment: this.inputForm.get("rightVerificationComment")?.value || ""
+      });
+    }
 
-    observedGradeSummaryFromForm.push({
-      category: Categories.Communication,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightCommunicationScore")?.value
-    });
+    if (this.inputForm.get("useBriefing")?.value) {
+      observedGradeSummaryFromForm.push({
+        category: Categories.Briefing,
+        pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftBriefingScore")?.value
+        ,comment: this.inputForm.get("leftBriefingComment")?.value || ""
+      });
+      observedGradeSummaryFromForm.push({
+        category: Categories.Briefing,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightBriefingScore")?.value
+        ,comment: this.inputForm.get("rightBriefingComment")?.value || ""
+      });
+    }
 
-    observedGradeSummaryFromForm.push({
-      category: Categories.StopWhenUnsure,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftStopWhenUnsureScore")?.value
-    });
-
-    observedGradeSummaryFromForm.push({
-      category: Categories.StopWhenUnsure,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightStopWhenUnsureScore")?.value
-    });
-
-    observedGradeSummaryFromForm.push({
-      category: Categories.SelfCheck,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftSelfCheckScore")?.value
-    });
-
-    observedGradeSummaryFromForm.push({
-      category: Categories.SelfCheck,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightSelfCheckScore")?.value
-    });
-
-    observedGradeSummaryFromForm.push({
-      category: Categories.Conservatism,
-      pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftConservatismScore")?.value
-    });
-
-    observedGradeSummaryFromForm.push({
-      category: Categories.Conservatism,
-      pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightConservatismScore")?.value
-    });
+    if (this.inputForm.get("useCommunication")?.value) {
 
 
 
+      observedGradeSummaryFromForm.push({
+        category: Categories.Communication,
+        pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftCommunicationScore")?.value,
+        comment: this.inputForm.get("leftCommunicationComment")?.value || ""
+
+      });
+
+      observedGradeSummaryFromForm.push({
+        category: Categories.Communication,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightCommunicationScore")?.value,
+        comment: this.inputForm.get("rightCommunicationComment")?.value || ""
+      });
+    }
+
+    if (this.inputForm.get("useStopWhenUnsure")?.value) {
+      observedGradeSummaryFromForm.push({
+        category: Categories.StopWhenUnsure,
+        pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftStopWhenUnsureScore")?.value,
+        comment: this.inputForm.get("leftStopWhenUnsureComment")?.value || ""
+      });
+
+      observedGradeSummaryFromForm.push({
+        category: Categories.StopWhenUnsure,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightStopWhenUnsureScore")?.value,
+        comment: this.inputForm.get("rightStopWhenUnsureComment")?.value || ""
+      });
+    }
+
+    if (this.inputForm.get("useSelfCheck")?.value) {
+      observedGradeSummaryFromForm.push({
+        category: Categories.SelfCheck,
+        pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftSelfCheckScore")?.value,
+        comment: this.inputForm.get("leftSelfCheckComment")?.value || ""
+      });
+
+      observedGradeSummaryFromForm.push({
+        category: Categories.SelfCheck,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightSelfCheckScore")?.value,
+        comment: this.inputForm.get("rightSelfCheckComment")?.value || ""
+      });
+    }
+
+    if (this.inputForm.get("useConservatism")?.value) {
+      observedGradeSummaryFromForm.push({
+        category: Categories.Conservatism,
+        pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
+        score: this.inputForm.get("leftConservatismScore")?.value,
+        comment: this.inputForm.get("leftConservatismComment")?.value || ""
+      });
+
+      observedGradeSummaryFromForm.push({
+        category: Categories.Conservatism,
+        pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
+        score: this.inputForm.get("rightConservatismScore")?.value,
+        comment: this.inputForm.get("rightConservatismComment")?.value || ""
+      });
+
+    }
 
     observedGradeSummaryFromForm.push({
       category: Categories.OverallScore,
       pilotEmpId:Number(this.inputForm.get("pilotL")?.value),
-      score: this.inputForm.get("leftOverallScore")?.value
+      score: this.inputForm.get("leftOverallScore")?.value,
+      comment: this.inputForm.get("leftOverallComment")?.value || ""
     });
     observedGradeSummaryFromForm.push({
       category: Categories.OverallScore,
       pilotEmpId:Number(this.inputForm.get("pilotR")?.value),
-      score: this.inputForm.get("rightOverallScore")?.value
+      score: this.inputForm.get("rightOverallScore")?.value,
+      comment: this.inputForm.get("rightOverallComment")?.value || ""
     });
     
-
-
     // request payload 
     const requestParameters = {
       observedEventInput: observedEventFromForm,
@@ -532,6 +630,31 @@ export class InputComponent implements OnInit {
       next: (response) => this.router.navigate(['/submission']),
       error: (err) => console.error("Submission error:", err),
       });
+  }
+
+
+  toggleSection(section: string, enabled: boolean) {
+    // Enable or disable form controls based on the section and enabled state
+    
+
+    const sectionKey = section.charAt(0).toUpperCase() + section.slice(1);
+
+    const leftScore = `left${sectionKey}Score`;
+    const rightScore = `right${sectionKey}Score`;
+    const leftComment = `left${sectionKey}Comment`;
+    const rightComment = `right${sectionKey}Comment`;
+
+    if (enabled) {
+      this.inputForm.get(leftScore)?.enable();
+      this.inputForm.get(rightScore)?.enable();
+      this.inputForm.get(leftComment)?.enable();
+      this.inputForm.get(rightComment)?.enable();
+    } else {
+      this.inputForm.get(leftScore)?.disable();
+      this.inputForm.get(rightScore)?.disable();
+      this.inputForm.get(leftComment)?.disable();
+      this.inputForm.get(rightComment)?.disable();
+    }
   }
 
 }

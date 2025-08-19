@@ -1,57 +1,39 @@
 .container {
-    padding: 20px;
-    margin: 3%;
-    overflow: auto; /* Enables horizontal scrolling if needed */
-  }
-  
-  .styled-table {
-    width: 100%;
-    max-width: 100vw; /* Ensures it does not exceed the screen width */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow-y: auto;
-    display: block; /* Ensures responsiveness */
-  }
-  
-  .styled-table th,
-  .styled-table td {
-  
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    white-space: nowrap; /* Prevents text wrapping */
-  }
-  
-  
-  .styled-table tr:hover {
-    background-color: #707070;
-  }
-  
-  /* Ensuring responsiveness on smaller screens */
-  @media (max-width: 768px) {
-    .styled-table {
-      display: block;
-      overflow-x: auto;
-    }
-  
-    .styled-table th,
-    .styled-table td {
-      font-size: 14px;
-      padding: 8px;
-    }
-  }
-  
-  /* Buttons */
-  .edit-btn {
-    /* background-color: #28a745 !important;
-    color: white !important; */
-    border-radius: 4px;
-    padding: 6px 10px;
-    margin-right: 5px;
-  }
-  
-  .delete-btn {
-    
-    border-radius: 4px;
-    padding: 6px 10px;
-  }
-  
+  padding: 20px;
+  margin: 3%;
+  overflow-x: auto;
+}
+
+/* Table styling */
+.styled-table {
+  font-size: 13px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Table header and cells: set ellipsis, no wrap */
+.styled-table th,
+.styled-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+/* Row hover */
+.styled-table tr:hover {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+/* Buttons */
+.edit-btn, .delete-btn {
+  border-radius: 4px;
+  margin-right: 5px;
+}
+.delete-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+}

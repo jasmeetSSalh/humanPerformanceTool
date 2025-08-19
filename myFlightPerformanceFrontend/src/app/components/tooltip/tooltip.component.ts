@@ -29,7 +29,7 @@ export class TooltipComponent {
           { label: 'Select Test', route: '/test', icon: 'pi pi-server'},
           { label: 'Form Input', route: '/input', icon: 'pi pi-plus' },
           { label: 'Submissions', route: '/submission', icon: 'pi pi-book' },
-          { label: 'Report Card', route: '/reportcard', icon: 'pi pi-file-pdf' }
+          // { label: 'Report Card', route: '/reportcard', icon: 'pi pi-file-pdf' }
         ]
       },
       {

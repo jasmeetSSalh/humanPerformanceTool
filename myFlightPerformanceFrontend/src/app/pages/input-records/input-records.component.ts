@@ -97,12 +97,37 @@ export class InputRecordsComponent implements OnInit{
         return this.askYesNoQuestionForDeletingSeg(question);
       }
     }
-}
 
-
- // editting if needed copy the structure of the editSeg component
+     // editting if needed copy the structure of the editSeg component
     // editSeg(segId: number) {
     //   console.log("Navigating to edit:", segId); // Debugging step
     //   this.router.navigate(['/edit', segId]);
     // }
+
+
+    downloadP1(eventId: number, segId: number, pilotEmpId: number) {
+      console.log("Downloading P1 Report for Seg ID:", segId, "Pilot Employee ID:", pilotEmpId, "Event ID:", eventId);
+      this.inputRecordService.downloadReportCard(eventId, segId, pilotEmpId)
+        .then(() => {
+          console.log("P1 Report downloaded successfully");
+        })
+        .catch((error) => {
+          console.error("Error downloading P1 Report:", error);
+        });
+    }
+
+    downloadP2(eventId: number, segId: number, pilotEmpId: number) {
+      console.log("Downloading P2 Report for Seg ID:", segId);
+      this.inputRecordService.downloadReportCard(eventId, segId, pilotEmpId)
+        .then(() => {
+          console.log("P2 Report downloaded successfully");
+        })
+        .catch((error) => {
+          console.error("Error downloading P2 Report:", error);
+        });
+    }
+
+
+  }
+
     

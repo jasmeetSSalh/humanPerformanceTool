@@ -24,7 +24,7 @@ export const routes: Routes = [
 
   { path: 'submission', component: InputRecordsComponent},
 
-  { path: 'reportcard', component: ReportCardComponent},
+  // { path: 'reportcard', component: ReportCardComponent},
 
   { path: 'analytics', component: PowerbiWrapperComponent},
 

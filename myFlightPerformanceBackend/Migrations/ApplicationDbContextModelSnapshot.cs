@@ -150,6 +150,10 @@ namespace myFlightPerformance.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 

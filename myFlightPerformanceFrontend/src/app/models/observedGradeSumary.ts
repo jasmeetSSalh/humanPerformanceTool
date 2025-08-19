@@ -1,7 +1,8 @@
 export interface ObservedGradeSummary {
     category: Categories;
     pilotEmpId: Number;
-    score: Number
+    score: Number;
+    comment: String;
 }
 
 export enum Categories {
