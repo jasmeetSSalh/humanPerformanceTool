@@ -50,7 +50,7 @@ export class InputService {
     console.log('Request Payload:', requestPayload);
 
 
-    return this.http.post(`http://localhost:5000/api/input-seg-form`, requestPayload);
+    return this.http.post(`${this.baseUrl}/input-seg-form`, requestPayload);
   }
 
 }

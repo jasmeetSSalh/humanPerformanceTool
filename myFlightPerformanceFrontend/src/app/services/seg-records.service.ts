@@ -15,7 +15,7 @@ import { SegDocumentResponse } from '../models/segDocumentRequest';
     constructor(private http: HttpClient) {}
 
     getSpecificSegDocument(SegId: number): Observable<SegDocumentResponse>{
-      return this.http.get<SegDocumentResponse>(`http://localhost:5000/api/retrieve-seg-and-junction?SegId=${SegId}`).pipe(
+      return this.http.get<SegDocumentResponse>(`${this.baseUrl}/retrieve-seg-and-junction?SegId=${SegId}`).pipe(
         catchError((error) => {
           console.error('Error fetching documents:', error);
           return throwError(() => new Error('Failed to fetch documents'));
@@ -37,7 +37,7 @@ import { SegDocumentResponse } from '../models/segDocumentRequest';
       segDocumentInput: SegDocument, 
       segDocumentJunctionsInput: SegDocumentJunction[] 
     }): Observable<any> {
-      return this.http.post(`http://localhost:5000/api/edit-seg-documents`, requestPayload);
+      return this.http.post(`${this.baseUrl}/edit-seg-documents`, requestPayload);
     }
 
 

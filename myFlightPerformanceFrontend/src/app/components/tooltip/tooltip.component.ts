@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,7 @@ import { RecordingService } from '../../services/recording.service';
   standalone: true, // Ensure it's a standalone component
   templateUrl: './tooltip.component.html',
   styleUrls: ['./tooltip.component.scss'],
+  //encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, RouterModule, ButtonModule]
 })
 export class TooltipComponent {

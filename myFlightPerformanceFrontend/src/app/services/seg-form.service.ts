@@ -65,7 +65,7 @@ export class SegFormService {
       segDocumentInput: SegDocument, 
       segDocumentJunctionsInput: SegDocumentJunction[] 
     }): Observable<any> {
-      return this.http.post(`http://localhost:5000/api/create-seg`, requestPayload);
+      return this.http.post(`${this.baseUrl}/create-seg`, requestPayload);
     }
 
   // to insert new procedure

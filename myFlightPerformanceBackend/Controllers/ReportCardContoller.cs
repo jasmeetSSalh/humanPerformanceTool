@@ -31,14 +31,13 @@ namespace myFlightPerformance.Controllers
     
 
         [HttpPost("api/download-report-card")]
-        public IActionResult GenerateMarkingSheet([FromQuery] int eventId, int segId, int pilotEmpId)
+        public IActionResult GenerateMarkingSheet([FromQuery] int eventId, [FromQuery] int segId, [FromQuery] int pilotEmpId)
         {
             if (segId == 0 || pilotEmpId == 0)
                 return BadRequest("Invalid segment ID or pilot employee ID");
 
             var fields = getPilotGradeFields(eventId, segId, pilotEmpId).GetAwaiter().GetResult();
             string templatePath = Path.Combine(_env.ContentRootPath, "Forms", "report_card_template.docx");
-            string outputPath = Path.Combine(_env.ContentRootPath, "bin", "FilledMarkingSheet.docx");
 
             using (var document = DocX.Load(templatePath))
             {
@@ -46,13 +45,18 @@ namespace myFlightPerformance.Controllers
                 {
                     document.ReplaceText(kvp.Key, kvp.Value ?? "");
                 }
-                document.SaveAs(outputPath);
+                using (var ms = new MemoryStream())
+                {
+                    document.SaveAs(ms);
+                    ms.Position = 0;
+                    return File(
+                        ms.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "FilledMarkingSheet.docx"
+                    );
+                }
             }
-
-            byte[] bytes = System.IO.File.ReadAllBytes(outputPath);
-            return File(bytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "FilledMarkingSheet.docx");
         }
-
 
 
         // typically would in a seperate service file but this controller only has one end point
