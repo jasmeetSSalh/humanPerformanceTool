@@ -91,6 +91,33 @@ export class SegFormService {
       })
     );
   };
-  
+
+  // to insert new malfunction
+  insertMalfunction(malfunctionDescription: string, malfunctionCategory: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/malfunctions/insert?malfunctionDescription=${malfunctionDescription}&malfunctionCategory=${malfunctionCategory}`, {})
+    .pipe(
+      catchError((error) => {
+        console.error('Error inserting malfunction:', error)
+        return of(null); // Return null or an empty observable on error    
+      })
+    );
+  }
+
+  // to insert a new behaviour
+
+  //https://localhost:5001/api/observation/insert?observationDescription=Test12&observationCategory=Test&observationSubCategory=Test
+
+  insertBehaviour(behaviourDescription: string, behaviourCategory: string, behaviourSubCategory: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/observation/insert?observationDescription=${behaviourDescription}&observationCategory=${behaviourCategory}&observationSubCategory=${behaviourSubCategory}`, {})
+    .pipe(
+      catchError((error) => {
+        console.error('Error inserting behaviour:', error)
+        return of(null); // Return null or an empty observable on error    
+      })
+    );
+  }
+
+
+
 
 }

@@ -141,5 +141,31 @@ namespace myFlightPerformance.Controllers
                 return StatusCode(500, $"Error occurred during bulk insert: {ex.Message}");
             }
         }
+
+
+
+        [HttpPost("api/observation/insert")]
+        public IActionResult Insert([FromQuery] string observationDescription, string observationCategory, string observationSubCategory)
+        {
+            try
+            {
+                // Define the malfunctions to be inserted
+                var newObservation = new Observation 
+                {
+                    Behaviour = observationDescription,
+                    Category = observationCategory,
+                    SubCategory = observationSubCategory
+                };
+
+                var id = _bulkInsertService.InsertObservation(newObservation);
+                return Ok(id);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error occurred during bulk insert: {ex.Message}");
+            }
+        }
+
+
     }
 }

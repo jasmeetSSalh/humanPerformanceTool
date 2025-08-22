@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using myFlightPerformance.Services;
 using myFlightPerformance.Models;
+using System.Threading.Tasks;
 
 namespace myFlightPerformance.Controllers
 {
@@ -295,6 +296,30 @@ namespace myFlightPerformance.Controllers
 
                 _bulkInsertService.BulkInsertMalfunctions(malfunctions);
                 return Ok("Bulk insert completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error occurred during bulk insert: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost("api/malfunctions/insert")]
+        public async Task<IActionResult> Insert([FromQuery] string malfunctionDescription, string malfunctionCategory)
+        {
+            try
+            {
+                // Define the malfunctions to be inserted
+                var newEventTrigger = new EventTrigger 
+                                        {
+                                        TrigCat = malfunctionCategory ?? "N/A", 
+                                        TrigDes = malfunctionDescription ?? "N/A", 
+                                        TrigType = EventTrigger.TrigTypeEnum.Malfunction
+                                        };
+       
+
+                var id = await _bulkInsertService.InsertMalfunction(newEventTrigger);
+                return Ok(id);
             }
             catch (Exception ex)
             {

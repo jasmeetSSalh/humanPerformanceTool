@@ -1,8 +1,4 @@
-@import url("https://api.fontshare.com/v2/css?f[]=nunito@200,201,300,301,400,401,500,501,600,601,700,701,800,801,900,901,1,2&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100,0,0");
-@import url("https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css");
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&family=Material+Symbols+Rounded&family=Material+Symbols+Sharp&display=swap");
+@import "primeicons/primeicons.css";
 
 // Mixin for flex properties
 @mixin flex-basic-props($direction: row, $justify: normal, $items: normal) {
@@ -13,10 +9,11 @@
 }
 
 * {
+  background-color: #262A4A;
   margin: 0;
   padding: 0;
-  font-family: "Nunito", sans-serif;
   transition: 0.5s all ease-in-out;
+  font-family:Arial, Helvetica, sans-serif
 }
 
 .container {

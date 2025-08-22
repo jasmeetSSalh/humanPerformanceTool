@@ -120,9 +120,10 @@ export class InputComponent implements OnInit {
   };
 
   stateOptions: any[] = [
-        { label: 'Off', value: 'off' },
-        { label: 'On', value: 'on' }
+        { label: 'Off', value: false },
+        { label: 'On', value: true }
     ];
+    
 
   constructor(
     private router: Router,
@@ -432,7 +433,21 @@ export class InputComponent implements OnInit {
 
 
   onSubmit(): void {
-    console.log("Form Submitted", this.inputForm.value);
+
+    // Pilot Validation
+
+    const pilotL = this.inputForm.get("pilotL")?.value;
+    const pilotR = this.inputForm.get("pilotR")?.value;
+
+    if (!pilotL || !pilotR) {
+      // You can use your own error display mechanism here
+      alert("Both Pilot L and Pilot R must be selected before submitting.");
+      return; // Prevent submission
+    }
+
+
+
+    //console.log("Form Submitted", this.inputForm.value);
 
     const observedEventFromForm : ObservedEvent = {
       segId: Number(this.currentSeg.segId),

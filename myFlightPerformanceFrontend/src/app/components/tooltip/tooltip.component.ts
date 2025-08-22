@@ -10,7 +10,7 @@ import { RecordingService } from '../../services/recording.service';
   standalone: true, // Ensure it's a standalone component
   templateUrl: './tooltip.component.html',
   styleUrls: ['./tooltip.component.scss'],
-  //encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   imports: [CommonModule, RouterModule, ButtonModule]
 })
 export class TooltipComponent {

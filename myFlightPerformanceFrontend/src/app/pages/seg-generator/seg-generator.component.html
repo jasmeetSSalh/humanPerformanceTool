@@ -1,3 +1,50 @@
+<p-dialog header="Edit Profile" [modal]="true" [(visible)]="isVisibleObservation" [style]="{ width: '25rem' }">
+  <span class="p-text-secondary block mb-8">Add Observation</span>
+  <div class="flex items-center gap-4 mb-8">
+
+    <label for="newObservationCategory" class="font-semibold w-24">Observation Category</label>
+    <!-- Category -->
+    <p-dropdown 
+      [options]="observationSelectionCategory"
+      [(ngModel)]="newObservationCategory"
+      optionLabel="Category"
+      placeholder="Select a Category"
+      (onChange)="getSelectedSubCategories($event)" />
+
+    <!-- SubCategory -->
+    <p-dropdown 
+      [options]="selectedCategorySubCategoryList"
+      [(ngModel)]="newObservationSubCategory"
+      placeholder="Select a SubCategory"
+      class="w-full md:w-56" />
+
+    <label for="newObservationDescription" class="font-semibold w-24">Observation Description</label>
+    <input type="text" pInputText [(ngModel)]="newObservationDescription" />
+
+  </div>
+  <div class="flex justify-end gap-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="isVisibleObservation = false" />
+    <p-button label="Save" (onClick)="addNewObservation(); isVisibleObservation = false" />
+  </div>
+</p-dialog>
+
+<p-dialog 
+  header="Edit Profile" 
+  [modal]="true" 
+  [(visible)]="isVisibleMalfunction" 
+  [style]="{ width: '25rem' }">
+  <span class="p-text-secondary block mb-8">Add Malfunction</span>
+  <div class="flex items-center gap-4 mb-8">
+    <label for="newEventTriggerDescription" class="font-semibold w-24">Malfunction Description</label>
+    <input type="text" pInputText [(ngModel)]="newEventTriggerDescription" />
+
+  </div>
+  <div class="flex justify-end gap-2">
+    <p-button label="Cancel" severity="secondary" (onClick)="isVisibleMalfunction = false" />
+    <p-button label="Save" (onClick)="addNewEventTrigger('Malfunction'); isVisibleMalfunction = false" />
+  </div>
+</p-dialog>
+
 <p-dialog 
   header="Edit Profile" 
   [modal]="true" 
@@ -78,24 +125,26 @@
           
           <h3>Event Trigger {{i + 1}}</h3>
           <div class="order-controls">
+            
             <p-button icon="pi pi-arrow-up" (click)="moveUp(i)" 
                      [disabled]="i === 0" styleClass="p-button-text"></p-button>
             <p-button icon="pi pi-arrow-down" (click)="moveDown(i)" 
                      [disabled]="i === segDocumentJunction.length - 1" styleClass="p-button-text"></p-button>
             <p-button icon="pi pi-trash" (click)="removeJunction(i)" styleClass="p-button-danger p-button-text"></p-button>
-        </div>
-
+            
+          </div>
       </div>
         
         
         <div class="grid p-fluid">
           <div class="col-12">
-          <label>Select Master Category</label>
+          <label>Select Trigger Category</label>
           <p-select
+            [filter]="true" filterBy="label" [showClear]="true" 
             formControlName="CurrentMasterSelections"
             [options]="masterSelectionType"
             optionLabel="label"
-            placeholder="Select Category"
+            placeholder="Select Trigger Category"
             class="w-full"
             (onChange)="onMasterSelectionChange($event, i)">
           </p-select>
@@ -103,22 +152,33 @@
 
         <div class="col-12" *ngIf="junction.get('CurrentMasterSelections')?.value">
           <label>
-            Select {{ junction.get('CurrentMasterSelections')?.value?.label }}
+            Select {{ junction.get('CurrentMasterSelections')?.value?.label }} Trigger 
           </label>
 
-          <p-dropdown
+          <p-select
+            [filter]="true" filterBy="trigDes" [showClear]="true" 
             formControlName="CurrentEventTrigger"
             [options]="getCategoryArrayForJunction(i)"
             optionLabel="trigDes"
             placeholder="Select Event Trigger"
             class="w-full">
-          </p-dropdown>
+            (onChange)="onMasterSelectionChange($event, i)">
+          </p-select>
+
+          <!-- new addittion -->
+          <p-button 
+            *ngIf="junction.get('CurrentMasterSelections')?.value?.label === 'Malfunction'"
+            label="Add New Malfunction"
+            icon="pi pi-plus"
+            class="p-button-text gap-3"
+            (onClick)="isVisibleMalfunction = true">
+          </p-button>
 
           <p-button 
             *ngIf="junction.get('CurrentMasterSelections')?.value?.label === 'Procedure'"
             label="Add New Procedure"
             icon="pi pi-plus"
-            class="p-button-text"
+            class="p-button-text gap-3"
             (onClick)="isVisibleProcedure = true">
           </p-button>
 
@@ -126,7 +186,7 @@
             *ngIf="junction.get('CurrentMasterSelections')?.value?.label === 'Other'"
             label="Add New Other"
             icon="pi pi-plus"
-            class="p-button-text"
+            class="p-button-text gap-3"
             (onClick)="isVisibleOther = true">
           </p-button>
         </div>
@@ -140,6 +200,15 @@
               placeholder="Select Observations"
               class="w-full">
             </p-multiSelect>
+
+
+            <p-button 
+              *ngIf="junction.get('CurrentEventTrigger')?.value"
+              label="Add New Observation"
+              icon="pi pi-plus"
+              class="p-button-text gap-3"
+              (onClick)="isVisibleObservation = true">
+            </p-button>
 
           </div>
         </div>
@@ -164,10 +233,6 @@
         [disabled]="isButtonDisabled"
         (click)="handleButtonClick()">
       </p-button>
-
-
-
-    
 
     </div>
   </form>

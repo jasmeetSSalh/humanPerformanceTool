@@ -62,3 +62,27 @@
 .title{
     font-size: 3rem;
 }
+
+
+.procedure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.procedure-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  align-items: flex-start;
+}
+
+.procedure-item span {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}

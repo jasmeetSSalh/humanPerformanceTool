@@ -111,7 +111,7 @@
                                             <table class="w-full border-collapse border border-gray-500">
                                                 <thead>
                                                     <tr>
-                                                        <th class="border border-gray-400 px-4 py-2">SubCategory</th>
+                                                    
                                                         <th class="border border-gray-400 px-4 py-2">Behaviour</th>
                                                         <th class="border border-gray-400 px-4 py-2">Pilot 1 (P1)</th>
                                                         <th class="border border-gray-400 px-4 py-2">Pilot 2 (P2)</th>
@@ -119,9 +119,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr *ngFor="let observationCtrl of getObservations(eventIndex); let observationIndex = index" [formGroup]="observationCtrl">
-                                                        <td class="border border-gray-400 px-4 py-2">
-                                                        {{ observationCtrl.get('subCategory')?.value }}
-                                                        </td>
+                                                       
                                                         <td class="border border-gray-400 px-4 py-2">
                                                         {{ observationCtrl.get('behaviour')?.value }}
                                                         </td>
@@ -161,6 +159,42 @@
                     <ng-template #content let-activateCallback="activateCallback">
                         <div class="flex-auto flex justify-center items-center">
                             <div class="rounded bg-surface-700 justify-center items-center font-medium">
+
+                                <div class="procedure-grid">
+                                    <div class="procedure-item">
+                                        <span>Procedure Use &amp; Adherence</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useProcedural" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Briefing</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useBriefing" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Communication</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useCommunication" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Stop When Unsure</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useStopWhenUnsure" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Self Check</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useSelfCheck" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Conservatism</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useConservatism" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Situational Awareness</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useSituational" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                    <div class="procedure-item">
+                                        <span>Verification</span>
+                                        <p-selectbutton [options]="stateOptions" formControlName="useVerification" optionLabel="label" optionValue="value"></p-selectbutton>
+                                    </div>
+                                </div>
+
                                 <p-table [tableStyle]="{'min-width': '55rem'}" showGridlines>
                                     
                                     <ng-template pTemplate="header">
@@ -183,31 +217,24 @@
 
                                             </td>
                                         </tr>
-                                       
-                                        <tr>
+
+                                        <tr *ngIf="this.inputForm.get('useProcedural')?.value === true">
                                             <th>
-                                                <!-- TO DO -->
-                                                <!-- <p-checkbox 
-                                                    binary="true" 
-                                                    formControlName="useProcedural"
-                                                    (onChange)="toggleSection('procedural', $event.checked)">
-                                                </p-checkbox> -->
                                                 <span class="ml-2">Procedure Use & Adherence</span>
                                             </th>
                                             <th>
-                                                
-                                                <p-inputnumber  formControlName="leftProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                                <p-inputnumber formControlName="leftProceduralScore" [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
                                                 <p-slider [min]="0" [max]="10" [step]="1" formControlName="leftProceduralScore" class="w-full mb-4" (onChange)="calculateOverallScore()" />
                                                 <textarea class="w-full mt-4" pTextarea [autoResize]="true" formControlName="leftProceduralComment"></textarea>
                                             </th>
-                                            <th >
-                                                <p-inputnumber  formControlName="rightProceduralScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
+                                            <th>
+                                                <p-inputnumber formControlName="rightProceduralScore" [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
                                                 <p-slider [min]="0" [max]="10" [step]="1" formControlName="rightProceduralScore" class="w-full mb-4" (onChange)="calculateOverallScore()" />
                                                 <textarea class="w-full mt-4" pTextarea [autoResize]="true" formControlName="rightProceduralComment"></textarea>
                                             </th>
                                         </tr>
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useBriefing')?.value === true">
                                             <th>Briefing</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftBriefingScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -221,7 +248,7 @@
                                             </th>
                                         </tr>
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useCommunication')?.value === true">
                                             <th>Communication</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftCommunicationScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -235,7 +262,7 @@
                                             </th>
                                         </tr>
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useStopWhenUnsure')?.value === true">
                                             <th>Stop When Unsure</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftStopWhenUnsureScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -249,7 +276,7 @@
                                             </th>
                                         </tr>
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useSelfCheck')?.value === true">
                                             <th>Self Check</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftSelfCheckScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -263,7 +290,7 @@
                                             </th>
                                         </tr>
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useConservatism')?.value === true">
                                             <th>Conservatism</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftConservatismScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -278,7 +305,7 @@
                                         </tr>
 
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useSituational')?.value === true">
                                             <th>Situational Awareness</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftSituationalScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -292,7 +319,8 @@
                                             </th>
                                         </tr>
 
-                                        <tr>
+                                        <tr *ngIf="this.inputForm.get('useVerification')?.value === true">
+
                                             <th>Verification Practices</th>
                                             <th>
                                                 <p-inputnumber  formControlName="leftVerificationScore"  [min]="0" [max]="10" class="w-full mb-4" (onChange)="calculateOverallScore()" />
@@ -388,7 +416,9 @@
                                 severity="secondary" 
                                 (onClick)="activateCallback(2 + currentSegJunctions.length + 1)" 
                             />
+                            
                             <p-button label="Submit" type="submit" (onClick)="onSubmit()"/>
+
                         </div>
                     </ng-template>
                 </p-step-panel>

@@ -24,6 +24,7 @@ import {InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 
 
+
 @Component({
   selector: 'seg-generator-component',
   templateUrl: './seg-generator.component.html',
@@ -49,6 +50,9 @@ import { FormsModule } from '@angular/forms';
 export class SegGeneratorComponent implements OnInit {
   segForm: FormGroup;
 
+  isVisibleObservation: boolean = false;
+
+  isVisibleMalfunction: boolean = false;
   isVisibleProcedure: boolean = false;
   isVisibleOther: boolean = false;
 
@@ -59,6 +63,71 @@ export class SegGeneratorComponent implements OnInit {
   
   // Used to route to the page when editting
   private route = inject(ActivatedRoute);
+
+  // Used to capture a new Observation Information
+  newObservationDescription: string = '';
+
+  observationSelectionCategory: any[] = [
+    {
+      Category: "Briefings",
+      SubCategories: [
+        "Preparation",
+        "Delivery",
+        "De-Briefing",
+        "Documentation"
+      ]
+    },
+    {
+      Category: "Procedure Use",
+      SubCategories: [
+        "General",
+        "Information Box",
+        "Place-Keeping",
+        "Flowchart Notes",
+        "Procedure Hold"
+      ]
+    },
+    {
+      Category: "Communications",
+      SubCategories: [
+        "Verbal Communications",
+        "Written Communications"
+      ]
+    },
+    {
+      Category: "Stop When Unsure",
+      SubCategories: [
+        "Identification",
+        "Actions (worker)",
+        "Actions (supervisor)"
+      ]
+    },
+    {
+      Category: "Self Check",
+      SubCategories: [
+        "S.T.A.R.",
+        "Two Minute Drill"
+      ]
+    },
+    {
+      Category: "Conservatism",
+      SubCategories: [
+        "Conservative Decision Making"
+      ]
+    },
+    {
+      Category: "Second Party Verification",
+      SubCategories: [
+        "Peer Check",
+        "Independent Verification"
+      ]
+    }
+  ];
+
+  newObservationCategory: any = null;  // Should be the selected object, not string
+  newObservationSubCategory: any = null;
+
+  selectedCategorySubCategoryList: { label: string, value: string }[] = [];
 
   // Used to capture a new Event Trigger Information
   newEventTriggerDescription: string = '';
@@ -109,6 +178,17 @@ export class SegGeneratorComponent implements OnInit {
     });
   }
 
+
+
+
+  getSelectedSubCategories(event: any): void {
+    // event.value is the selected category object
+    const found = event.value;
+    this.selectedCategorySubCategoryList = found && found.SubCategories
+      ? found.SubCategories.map((sub: string) => ({ label: sub, value: sub }))
+      : [];
+    this.newObservationSubCategory = null; // reset subcategory selection
+  }
   // -------------------------------------- Field Data Loading Function ------------------------------------------- v
 
   loadDataPromise(): Promise<void> {
@@ -519,6 +599,74 @@ removeJunction(index: number) {
           alert('Error inserting procedure. Please try again.');
         }
       });
+    } else if (inputType == 'Malfunction') {
+
+      this.segFormService.insertMalfunction(this.newEventTriggerDescription, "AddittionalMalfunction").subscribe({
+        next: (response) => {
+          if (response !== null && response !== undefined) {
+
+            const newMalfunction: EventTrigger = {
+              trigId: response,
+              trigCat: 'Malfunction',
+              trigDes: this.newEventTriggerDescription,
+              trigType: 1
+            };
+
+            this.$existingMalfunctions.push(newMalfunction);
+            this.updateMasterSelection();
+            this.newEventTriggerDescription = '';
+            // Or use this.loadData() if you want to reload from backend
+           // this.loadData();
+          } else {
+            alert('Failed to insert malfunction. No ID returned.');
+          }
+        },
+        error: (error) => {
+          console.error('Error inserting malfunction:', error);
+          alert('Error inserting malfunction. Please try again.');
+        }
+      });
     }
+  }
+
+
+addNewObservation(): void {
+    if (!this.newObservationDescription || !this.newObservationCategory || !this.newObservationSubCategory) {
+      alert('Please fill in all observation fields.');
+      return;
+    }
+
+    // Pass only the category name and subcategory value to the service
+    this.segFormService.insertBehaviour(
+      this.newObservationDescription,
+      this.newObservationCategory.Category,
+      this.newObservationSubCategory
+    ).subscribe({
+      next: (response) => {
+        console.log('Observation added successfully:', response);
+        if (response !== null && response !== undefined) {
+          const newObservation: Observation = {
+            obsId: response,
+            behaviour: this.newObservationDescription,
+            category: this.newObservationCategory.Category,
+            subCategory: this.newObservationSubCategory
+          };
+
+          this.$existingObservation.push(newObservation);
+          this.newObservationDescription = '';
+          this.newObservationCategory = null;
+          this.newObservationSubCategory = null;
+          this.selectedCategorySubCategoryList = [];
+
+          this.isVisibleObservation = false; // Close the dialog after adding
+        } else {
+          alert('Failed to insert observation. No ID returned.');
+        }
+      },
+      error: (error) => {
+        console.error('Error adding observation:', error);
+        alert('Error adding observation. See console for details.');
+      }
+    });
   }
 }

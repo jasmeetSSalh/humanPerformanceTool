@@ -474,3 +474,7 @@ C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\o
 C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Xceed.Document.NET.dll
 C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Xceed.Words.NET.dll
 C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\System.IO.Packaging.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\SALJASME\source\repos\humanPerformanceTool\myFlightPerformanceBackend\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
