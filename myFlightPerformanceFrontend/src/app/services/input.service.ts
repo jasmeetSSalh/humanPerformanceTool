@@ -14,7 +14,7 @@ import { ObservedGradeSummary } from '../models/observedGradeSumary';
   providedIn: 'root',
 })
 export class InputService {
-  private baseUrl = 'http://localhost:5000/api';
+  private baseUrl = '/api';
 
   constructor(private http: HttpClient) {}
 

@@ -10,7 +10,7 @@ import { SegDocumentResponse } from '../models/segDocumentRequest';
     providedIn: 'root',
   })
   export class RecordsService {
-    private baseUrl = 'http://localhost:5000/api';
+    private baseUrl = '/api';
   
     constructor(private http: HttpClient) {}
 

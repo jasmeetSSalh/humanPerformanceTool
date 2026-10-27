@@ -84,6 +84,31 @@ namespace myFlightPerformance.Migrations
                     b.ToTable("SegDocumentJunctions");
                 });
 
+            modelBuilder.Entity("myFlightPerformance.Models.Instructor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Instructors");
+                });
+
             modelBuilder.Entity("myFlightPerformance.Models.ObservedEvent", b =>
                 {
                     b.Property<int>("EventId")
