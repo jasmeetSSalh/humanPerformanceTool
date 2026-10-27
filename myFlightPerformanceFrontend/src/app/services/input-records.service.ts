@@ -8,7 +8,7 @@ import { ObservedEvent } from "../models/observedEvent";
 })
 
 export class InputRecordsService {
-    private baseUrl = 'http://localhost:5000/api'
+    private baseUrl = '/api'
 
     constructor(private http: HttpClient) {}
 

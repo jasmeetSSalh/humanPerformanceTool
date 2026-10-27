@@ -1,0 +1,48 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+  background-color: #262A4A;
+}
+
+.login-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 380px;
+  padding: 32px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  align-self: center;
+}
+
+h1 {
+  margin: 8px 0 0;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0 0 12px;
+  color: #6b7280;
+  text-align: center;
+}
+
+label {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+p-button {
+  margin-top: 16px;
+}

@@ -16,11 +16,16 @@ namespace myFlightPerformance.Models
         public DbSet<ObservedEvent> ObservedEvents { get; set; }
         public DbSet<ObservedGrade> ObservedGrades { get; set; }
         public DbSet<ObservedGradesInstructorCritique> ObservedGradesInstructorCritiques { get; set; }
-        
+        public DbSet<Instructor> Instructors { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Instructor>()
+                .HasIndex(i => i.Username)
+                .IsUnique();
 
             //Composite Key: a SegId can have multiple TrigIds but can't have duplicate TrigIds
             modelBuilder.Entity<SegDocumentJunction>()

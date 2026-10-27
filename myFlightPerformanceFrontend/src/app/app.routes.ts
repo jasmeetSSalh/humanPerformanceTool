@@ -6,27 +6,38 @@ import { RecordsComponent } from './pages/seg-records/seg-records.component';
 import { InputRecordsComponent } from './pages/input-records/input-records.component';
 import { PowerbiWrapperComponent } from './pages/powerbi-wrapper/powerbi-wrapper.component';
 import { ReportCardComponent } from './pages/report-card/report-card.component';
+import { LoginComponent } from './pages/login/login.component';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
-  
-  { path: '', component: HomeComponent },
 
-  { path: 'test', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
 
-  { path: 'input', component: InputComponent },
+  // Every other page needs a signed-in instructor.
+  {
+    path: '',
+    canActivateChild: [authGuard],
+    children: [
+      { path: '', component: HomeComponent },
 
-  { path: 'input/:SegId', component: InputComponent },
+      { path: 'test', component: HomeComponent },
 
-  { path: 'inputseg', component: SegGeneratorComponent},
-  { path: 'edit/:SegId', component: SegGeneratorComponent }, // Editing an existing document
+      { path: 'input', component: InputComponent },
 
-  { path: 'records', component: RecordsComponent},
+      { path: 'input/:SegId', component: InputComponent },
 
-  { path: 'submission', component: InputRecordsComponent},
+      { path: 'inputseg', component: SegGeneratorComponent},
+      { path: 'edit/:SegId', component: SegGeneratorComponent }, // Editing an existing document
 
-  // { path: 'reportcard', component: ReportCardComponent},
+      { path: 'records', component: RecordsComponent},
 
-  { path: 'analytics', component: PowerbiWrapperComponent},
+      { path: 'submission', component: InputRecordsComponent},
 
-  { path: '**', redirectTo: 'home', pathMatch: 'full' }
+      // { path: 'reportcard', component: ReportCardComponent},
+
+      { path: 'analytics', component: PowerbiWrapperComponent},
+    ]
+  },
+
+  { path: '**', redirectTo: '' }
 ];

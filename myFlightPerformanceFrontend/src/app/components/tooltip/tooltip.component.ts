@@ -1,9 +1,10 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { routes } from '../../app.routes';
 import { RecordingService } from '../../services/recording.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-tooltip',
@@ -15,7 +16,11 @@ import { RecordingService } from '../../services/recording.service';
 })
 export class TooltipComponent {
 
-    constructor(private recordingService: RecordingService) {}
+    constructor(
+      private recordingService: RecordingService,
+      public authService: AuthService,
+      private router: Router
+    ) {}
   
   
   items: any[] = [];
@@ -53,6 +58,14 @@ export class TooltipComponent {
   }
   frameR() {
     this.recordingService.frameRecording();
+  }
+
+  signOut() {
+    const toLogin = () => {
+      this.authService.clearSession();
+      this.router.navigate(['/login']);
+    };
+    this.authService.logout().subscribe({ complete: toLogin, error: toLogin });
   }
 
 

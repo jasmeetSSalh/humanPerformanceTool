@@ -12,6 +12,7 @@ A web app for flight instructors to run scenario-based simulator assessments. In
 - **Records:** browse past SEGs and submitted assessments.
 - **Report cards:** from the records page, download a pilot's report card. The API fills a Word (`.docx`) marking sheet template from the stored grades.
 - **Bulk import:** load the catalogue of behaviours and triggers through bulk-insert endpoints (EFCore.BulkExtensions).
+- **Instructor sign-in:** every API endpoint requires a signed-in instructor. Passwords are hashed with ASP.NET Core Identity's `PasswordHasher` (PBKDF2). Sessions use an HTTP-only, `SameSite=Strict` cookie, and login attempts are limited to 5 per minute per IP address.
 
 ## Architecture
 
@@ -37,32 +38,37 @@ A SEG holds an ordered list of triggers. Each trigger links to the behaviours th
 
 **Requirements:** .NET 8 SDK and Node.js 18 or newer.
 
+The API applies database migrations when it starts. On the first run, set the first instructor account through environment variables. Once that account exists, the variables are ignored.
+
 ```bash
-# API: http://localhost:5000 (Swagger UI at /swagger)
+# API: http://localhost:5000 (Swagger UI at /swagger in Development)
 cd myFlightPerformanceBackend
-dotnet tool restore
-dotnet ef database update
+export InitialInstructor__Username=admin
+export InitialInstructor__Password='choose-a-long-password'
 dotnet run
 
 # Frontend: http://localhost:4200 (in a second terminal)
+# The dev server proxies /api to the API, so the session cookie stays same-origin.
 cd myFlightPerformanceFrontend
 npm install
 npm start
 ```
 
-A packaged build is available in [`build/`](build).
+On Windows PowerShell, set the variables with `$env:InitialInstructor__Username = "admin"` instead of `export`. Signed-in instructors can add more accounts with `POST /api/auth/instructors`.
+
+A packaged build of an earlier version, from before sign-in was added, is in [`build/`](build).
 
 ## Project layout
 
 ```
 myFlightPerformanceBackend/
-  Controllers/      REST endpoints (SEGs, assessments, report cards, bulk import)
+  Controllers/      REST endpoints (auth, SEGs, assessments, report cards, bulk import)
   Services/         Business logic behind interfaces
   Models/           EF Core entities and request DTOs
   Migrations/       EF Core schema history
   Forms/            Report card .docx template
 myFlightPerformanceFrontend/
-  src/app/pages/    Home, SEG builder, grading, records and report card download
-  src/app/services/ HTTP clients for the API
+  src/app/pages/    Login, home, SEG builder, grading, records and report card download
+  src/app/services/ HTTP clients for the API, plus the auth guard and interceptor
   src/app/models/   TypeScript types matching the API
 ```

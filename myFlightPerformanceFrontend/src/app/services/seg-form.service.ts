@@ -12,7 +12,7 @@ import { SegDocumentJunction } from '../models/segDocumentJunction';
 export class SegFormService {
   constructor(private http: HttpClient) { }
 
-  private baseUrl = 'http://localhost:5000/api';
+  private baseUrl = '/api';
 
 
   // ------------------------------------------ GET REQUESTS -------------------------------------------

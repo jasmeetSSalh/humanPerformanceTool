@@ -1,0 +1,33 @@
+<div class="login-page">
+  <form class="login-card" (ngSubmit)="signIn()">
+    <img class="logo" src="/assets/performance.png" alt="" />
+    <h1>Human Performance Training Tool</h1>
+    <p class="subtitle">Sign in with your instructor account</p>
+
+    <label for="username">Username</label>
+    <input
+      pInputText
+      id="username"
+      name="username"
+      autocomplete="username"
+      [(ngModel)]="username"
+      [disabled]="loading"
+      autofocus />
+
+    <label for="password">Password</label>
+    <p-password
+      inputId="password"
+      name="password"
+      autocomplete="current-password"
+      [(ngModel)]="password"
+      [feedback]="false"
+      [toggleMask]="true"
+      [disabled]="loading"
+      styleClass="w-full"
+      inputStyleClass="w-full" />
+
+    <p-message *ngIf="errorMessage" severity="error" [text]="errorMessage" />
+
+    <p-button type="submit" label="Sign in" styleClass="w-full" [loading]="loading" />
+  </form>
+</div>

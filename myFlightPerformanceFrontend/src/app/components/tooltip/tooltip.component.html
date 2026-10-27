@@ -60,6 +60,19 @@
           (onClick)="frameR()">
         </p-button> -->
       </div>
+      <hr />
+
+      <div class="nav-item">
+        <span class="nav-text">Signed in as {{ authService.username() }}</span>
+        <p-button
+          class="material-symbols-rounded"
+          icon="pi pi-sign-out"
+          text
+          plain
+          [label]="isCollapsed ? '' : 'Sign Out'"
+          (onClick)="signOut()">
+        </p-button>
+      </div>
     </section>
 
     <!-- Toggle Button -->
